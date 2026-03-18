@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Climate Happy Hour · Attendees</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f7; color: #1d1d1f; font-size: 14px; }
+  .header { background: #fff; border-bottom: 1px solid #e5e5ea; padding: 20px 28px 16px; }
+  .header h1 { font-size: 18px; font-weight: 600; color: #1d1d1f; }
+  .header .sub { font-size: 13px; color: #6e6e73; margin-top: 3px; }
+  .controls { background: #fff; padding: 14px 28px; border-bottom: 1px solid #e5e5ea; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .controls input[type=text] { border: 1px solid #d2d2d7; border-radius: 8px; padding: 7px 12px; font-size: 13px; width: 220px; outline: none; }
+  .controls input[type=text]:focus { border-color: #0071e3; }
+  .controls select { border: 1px solid #d2d2d7; border-radius: 8px; padding: 7px 10px; font-size: 13px; outline: none; background: #fff; cursor: pointer; }
+  .count { font-size: 13px; color: #6e6e73; margin-left: auto; white-space: nowrap; }
+  .batch-section { background: #fff; padding: 12px 28px; border-bottom: 1px solid #e5e5ea; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .batch-section .label { font-size: 12px; color: #6e6e73; margin-right: 4px; }
+  .batch-btn { background: #0071e3; color: #fff; border: none; border-radius: 7px; padding: 6px 14px; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap; }
+  .batch-btn:hover { background: #0077ed; }
+  .tip { font-size: 11px; color: #8e8e93; margin-left: 6px; }
+  .table-wrap { padding: 20px 28px; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  thead th { background: #f5f5f7; padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 600; color: #6e6e73; text-transform: uppercase; letter-spacing: .5px; cursor: pointer; user-select: none; white-space: nowrap; }
+  thead th:hover { background: #ebebee; }
+  thead th.sort-asc::after { content: ' ↑'; }
+  thead th.sort-desc::after { content: ' ↓'; }
+  tbody tr { border-top: 1px solid #f2f2f7; }
+  tbody tr:hover { background: #fafafa; }
+  tbody tr.batch-divider { background: #f5f5f7; }
+  tbody tr.batch-divider td { padding: 5px 14px; font-size: 11px; font-weight: 600; color: #8e8e93; text-transform: uppercase; letter-spacing: .5px; border-top: 1px solid #e5e5ea; }
+  td { padding: 10px 14px; vertical-align: middle; }
+  td.li-col { width: 44px; text-align: center; }
+  td.name-col { font-weight: 600; white-space: nowrap; }
+  .li-link { display: inline-flex; align-items: center; }
+  .li-link.dim svg { opacity: 0.15; }
+  .badge { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  /* Event badge */
+  .badge-event { background: #e8f0fe; color: #1a56db; }
+  /* Status badges */
+  .badge-confirmed { background: #d1fae5; color: #065f46; }
+  .badge-guessed { background: #fef9c3; color: #854d0e; }
+  .badge-na { background: #f3f4f6; color: #6b7280; }
+  /* Type badges */
+  .badge-vc { background: #ede9fe; color: #5b21b6; }
+  .badge-lp { background: #dbeafe; color: #1d4ed8; }
+  .badge-impact { background: #d1fae5; color: #065f46; }
+  .badge-investor { background: #e0f2fe; color: #0369a1; }
+  .badge-founder { background: #fee2e2; color: #991b1b; }
+  .badge-policy { background: #fce7f3; color: #9d174d; }
+  .badge-academic { background: #fef3c7; color: #92400e; }
+  .badge-consultant { background: #fff7ed; color: #9a3412; }
+  .badge-unknown { background: #f3f4f6; color: #6b7280; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Climate Happy Hour</h1>
+  <div class="sub">15 attendees scraped · <a href="https://luma.com/idf31rqs" target="_blank" style="color:#0071e3;text-decoration:none;">luma.com/idf31rqs</a></div>
+</div>
+
+<div class="controls">
+  <input type="text" id="search" placeholder="Search by name…" oninput="render()">
+  <select id="filterType" onchange="render()">
+    <option value="">All types</option>
+    <option value="VC">VC</option>
+    <option value="LP">LP</option>
+    <option value="Impact Investor">Impact Investor</option>
+    <option value="Investor">Investor</option>
+    <option value="Founder/Operator">Founder/Operator</option>
+    <option value="Policy/NGO">Policy/NGO</option>
+    <option value="Academic/Research">Academic/Research</option>
+    <option value="Consultant/Advisor">Consultant/Advisor</option>
+    <option value="Unknown">Unknown</option>
+  </select>
+  <select id="filterStatus" onchange="render()">
+    <option value="">All statuses</option>
+    <option value="Confirmed">Confirmed</option>
+    <option value="Guessed">Guessed</option>
+    <option value="N/A">N/A</option>
+  </select>
+  <span class="count" id="count">15 of 15</span>
+</div>
+
+<div class="batch-section" id="batchSection">
+  <span class="label">Open LinkedIn:</span>
+  <span class="tip">Allow popups for the launcher tab.</span>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th class="li-col" data-col="li">LI</th>
+        <th data-col="name">Name</th>
+        <th data-col="event">Event</th>
+        <th data-col="status">Status</th>
+        <th data-col="type">Type</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+<script>
+// [photo_url, name, event, linkedin_url, status, type]
+const DATA = [
+  [null, "Alex Gheorghe",        "Climate Happy Hour", "https://linkedin.com/in/gheorghealexandra",          "Confirmed", "VC"],
+  [null, "Amedeo Lorenzotti",    "Climate Happy Hour", "https://linkedin.com/in/amedeo-lorenzotti-847b39166","Confirmed", "VC"],
+  [null, "Adriana Becerra",      "Climate Happy Hour", "https://linkedin.com/in/adrianabecerracid",          "Confirmed", "Impact Investor"],
+  [null, "Allison Prescott",     "Climate Happy Hour", "https://linkedin.com/in/allisonkprescott",           "Confirmed", "Impact Investor"],
+  [null, "Annemarie Hagarty",    "Climate Happy Hour", "https://linkedin.com/in/annemarie-hagarty",          "Confirmed", "Impact Investor"],
+  [null, "A. Eunice Bet-Mansour","Climate Happy Hour", "https://linkedin.com/in/eunicebetmansour",           "Confirmed", "Founder/Operator"],
+  [null, "Adam S. Johnson",      "Climate Happy Hour", "https://linkedin.com/in/adam-s-johnson-3268a691",    "Confirmed", "Founder/Operator"],
+  [null, "Ajay Bawa",            "Climate Happy Hour", "https://linkedin.com/in/ajay-bawa-45147925",         "Confirmed", "Founder/Operator"],
+  [null, "Aashika Balaji",       "Climate Happy Hour", "https://linkedin.com/in/aashika-balaji-b52a15104",   "Confirmed", "Policy/NGO"],
+  [null, "Anna Zetkulic",        "Climate Happy Hour", "https://linkedin.com/in/anna-zetkulic-23a17859",     "Confirmed", "Policy/NGO"],
+  [null, "Anastasia Milovidova", "Climate Happy Hour", "https://linkedin.com/in/anastasiamilo",              "Confirmed", "Consultant/Advisor"],
+  [null, "Abhi Dewan",           "Climate Happy Hour", "https://linkedin.com/in/abhi-dewan",                 "Confirmed", "Unknown"],
+  [null, "Anant Gupta",          "Climate Happy Hour", "https://linkedin.com/in/-anant-gupta",               "Confirmed", "Unknown"],
+  [null, "Andres Diaz",          "Climate Happy Hour", "https://linkedin.com/in/SEEK-MANAGEMENT",            "Confirmed", "Unknown"],
+  [null, "Alex Silverman",       "Climate Happy Hour", "https://linkedin.com/in/apsilverman",                "Confirmed", "Unknown"],
+];
+
+const TYPE_ORDER = ["VC","LP","Impact Investor","Investor","Founder/Operator","Policy/NGO","Academic/Research","Consultant/Advisor","Unknown"];
+const STATUS_ORDER = ["Confirmed","Guessed","N/A"];
+
+const LI_SVG = `<svg width="22" height="22" viewBox="0 0 24 24" fill="#0a66c2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>`;
+
+function typeBadgeClass(t) {
+  const m = {"VC":"badge-vc","LP":"badge-lp","Impact Investor":"badge-impact","Investor":"badge-investor","Founder/Operator":"badge-founder","Policy/NGO":"badge-policy","Academic/Research":"badge-academic","Consultant/Advisor":"badge-consultant","Unknown":"badge-unknown"};
+  return m[t] || "badge-unknown";
+}
+function statusBadgeClass(s) {
+  return s === "Confirmed" ? "badge-confirmed" : s === "Guessed" ? "badge-guessed" : "badge-na";
+}
+
+let sortCol = null;
+let sortDir = 1;
+
+function defaultSort(a, b) {
+  const ta = TYPE_ORDER.indexOf(a[5]); const tb = TYPE_ORDER.indexOf(b[5]);
+  if (ta !== tb) return ta - tb;
+  const sa = STATUS_ORDER.indexOf(a[4]); const sb = STATUS_ORDER.indexOf(b[4]);
+  if (sa !== sb) return sa - sb;
+  return a[1].localeCompare(b[1]);
+}
+
+function getFiltered() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const ft = document.getElementById('filterType').value;
+  const fs = document.getElementById('filterStatus').value;
+  return DATA.filter(r =>
+    (!q || r[1].toLowerCase().includes(q)) &&
+    (!ft || r[5] === ft) &&
+    (!fs || r[4] === fs)
+  );
+}
+
+function getSorted(rows) {
+  if (!sortCol) return [...rows].sort(defaultSort);
+  const colMap = {li:3, name:1, event:2, status:4, type:5};
+  const idx = colMap[sortCol];
+  return [...rows].sort((a,b) => {
+    let av = a[idx], bv = b[idx];
+    if (sortCol === 'type') { av = TYPE_ORDER.indexOf(av); bv = TYPE_ORDER.indexOf(bv); return (av-bv)*sortDir; }
+    if (sortCol === 'status') { av = STATUS_ORDER.indexOf(av); bv = STATUS_ORDER.indexOf(bv); return (av-bv)*sortDir; }
+    return av.localeCompare(bv) * sortDir;
+  });
+}
+
+function render() {
+  const filtered = getFiltered();
+  const sorted = getSorted(filtered);
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
+
+  let dataRowCount = 0;
+  sorted.forEach((r, i) => {
+    // Batch divider every 10 rows
+    if (dataRowCount % 10 === 0) {
+      const batch = Math.floor(dataRowCount / 10) + 1;
+      const from = dataRowCount + 1;
+      const to = Math.min(dataRowCount + 10, sorted.length);
+      const divRow = document.createElement('tr');
+      divRow.className = 'batch-divider';
+      divRow.innerHTML = `<td colspan="5">Batch ${batch} · rows ${from}–${to}</td>`;
+      tbody.appendChild(divRow);
+    }
+
+    const tr = document.createElement('tr');
+    const hasLi = r[3] && r[3].length > 0;
+    tr.innerHTML = `
+      <td class="li-col"><a class="li-link${hasLi ? '' : ' dim'}" ${hasLi ? `href="${r[3]}" target="_blank"` : ''} title="${r[1]}">${LI_SVG}</a></td>
+      <td class="name-col">${r[1]}</td>
+      <td><span class="badge badge-event">${r[2]}</span></td>
+      <td><span class="badge ${statusBadgeClass(r[4])}">${r[4]}</span></td>
+      <td><span class="badge ${typeBadgeClass(r[5])}">${r[5]}</span></td>
+    `;
+    tbody.appendChild(tr);
+    dataRowCount++;
+  });
+
+  document.getElementById('count').textContent = `${sorted.length} of ${DATA.length}`;
+  renderBatchButtons(sorted);
+}
+
+function renderBatchButtons(sorted) {
+  const section = document.getElementById('batchSection');
+  // Remove old buttons
+  Array.from(section.querySelectorAll('.batch-btn')).forEach(b => b.remove());
+  const label = section.querySelector('.label');
+
+  const withLi = sorted.filter(r => r[3] && r[3].length > 0);
+  const batchSize = 10;
+  for (let i = 0; i < withLi.length; i += batchSize) {
+    const chunk = withLi.slice(i, i + batchSize);
+    const urls = chunk.map(r => r[3]);
+    const btn = document.createElement('button');
+    btn.className = 'batch-btn';
+    btn.textContent = `Open batch ${Math.floor(i/batchSize)+1} (${urls.length})`;
+    btn.onclick = (function(u) {
+      return function() {
+        const script = u.map(url => `window.open(${JSON.stringify(url)},'_blank');`).join('');
+        const page = `<html><body><script>window.onload=function(){${script}window.close();}<\/script><p style="font-family:sans-serif;padding:20px">Opening ${u.length} tabs...</p></body></html>`;
+        const blob = new Blob([page], {type: 'text/html'});
+        window.open(URL.createObjectURL(blob), '_blank');
+      };
+    })(urls);
+    label.after(btn);
+  }
+}
+
+// Column sort
+document.querySelectorAll('thead th[data-col]').forEach(th => {
+  th.addEventListener('click', () => {
+    const col = th.dataset.col;
+    if (sortCol === col) {
+      sortDir *= -1;
+      th.className = sortDir === 1 ? 'sort-asc' : 'sort-desc';
+    } else {
+      document.querySelectorAll('thead th').forEach(t => t.className = '');
+      sortCol = col;
+      sortDir = 1;
+      th.className = 'sort-asc';
+    }
+    render();
+  });
+});
+
+render();
+</script>
+</body>
+</html>
