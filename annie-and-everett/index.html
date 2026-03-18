@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Annie & Everett — New Senior Associates · Attendees</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f7; color: #1d1d1f; font-size: 14px; }
+  .header { background: #fff; border-bottom: 1px solid #e5e5ea; padding: 20px 28px 16px; }
+  .header h1 { font-size: 18px; font-weight: 600; color: #1d1d1f; }
+  .header .sub { font-size: 13px; color: #6e6e73; margin-top: 3px; }
+  .controls { background: #fff; padding: 14px 28px; border-bottom: 1px solid #e5e5ea; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .controls input[type=text] { border: 1px solid #d2d2d7; border-radius: 8px; padding: 7px 12px; font-size: 13px; width: 220px; outline: none; }
+  .controls input[type=text]:focus { border-color: #0071e3; }
+  .controls select { border: 1px solid #d2d2d7; border-radius: 8px; padding: 7px 10px; font-size: 13px; outline: none; background: #fff; cursor: pointer; }
+  .count { font-size: 13px; color: #6e6e73; margin-left: auto; white-space: nowrap; }
+  .batch-section { background: #fff; padding: 12px 28px; border-bottom: 1px solid #e5e5ea; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .batch-section .label { font-size: 12px; color: #6e6e73; margin-right: 4px; }
+  .batch-btn { background: #0071e3; color: #fff; border: none; border-radius: 7px; padding: 6px 14px; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap; }
+  .batch-btn:hover { background: #0077ed; }
+  .tip { font-size: 11px; color: #8e8e93; margin-left: 6px; }
+  .table-wrap { padding: 20px 28px; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  thead th { background: #f5f5f7; padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 600; color: #6e6e73; text-transform: uppercase; letter-spacing: .5px; cursor: pointer; user-select: none; white-space: nowrap; }
+  thead th:hover { background: #ebebee; }
+  thead th.sort-asc::after { content: ' ↑'; }
+  thead th.sort-desc::after { content: ' ↓'; }
+  tbody tr { border-top: 1px solid #f2f2f7; }
+  tbody tr:hover { background: #fafafa; }
+  td { padding: 10px 14px; vertical-align: middle; }
+  td.li-col { width: 44px; text-align: center; }
+  td.name-col { font-weight: 600; white-space: nowrap; }
+  .li-link { display: inline-flex; align-items: center; }
+  .li-link.dim svg { opacity: 0.15; }
+  .badge { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  /* Event badge */
+  .badge-event { background: #e8f0fe; color: #1a56db; }
+  /* Status badges */
+  .badge-confirmed { background: #d1fae5; color: #065f46; }
+  .badge-guessed { background: #fef9c3; color: #854d0e; }
+  .badge-na { background: #f3f4f6; color: #6b7280; }
+  /* Type badges */
+  .badge-vc { background: #ede9fe; color: #5b21b6; }
+  .badge-lp { background: #dbeafe; color: #1d4ed8; }
+  .badge-impact { background: #d1fae5; color: #065f46; }
+  .badge-investor { background: #e0f2fe; color: #0369a1; }
+  .badge-founder { background: #fee2e2; color: #991b1b; }
+  .badge-policy { background: #fce7f3; color: #9d174d; }
+  .badge-academic { background: #fef3c7; color: #92400e; }
+  .badge-consultant { background: #f3e8ff; color: #6b21a8; }
+  .badge-unknown { background: #f3f4f6; color: #6b7280; }
+  /* Batch divider rows */
+  tr.batch-divider td { background: #f9fafb; font-size: 11px; color: #9ca3af; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; padding: 6px 14px; border-top: 2px solid #e5e7eb; }
+  .no-results { text-align: center; padding: 40px; color: #6e6e73; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Welcome, Annie &amp; Everett — New Senior Associates</h1>
+  <div class="sub">Luma event · 30 attendees scraped</div>
+</div>
+
+<div class="controls">
+  <input type="text" id="search" placeholder="Search by name…" oninput="applyFilters()">
+  <select id="filterType" onchange="applyFilters()">
+    <option value="">All Types</option>
+    <option value="VC">VC</option>
+    <option value="LP">LP</option>
+    <option value="Impact Investor">Impact Investor</option>
+    <option value="Investor">Investor</option>
+    <option value="Founder/Operator">Founder/Operator</option>
+    <option value="Policy/NGO">Policy/NGO</option>
+    <option value="Academic/Research">Academic/Research</option>
+    <option value="Consultant/Advisor">Consultant/Advisor</option>
+    <option value="Unknown">Unknown</option>
+  </select>
+  <select id="filterStatus" onchange="applyFilters()">
+    <option value="">All Statuses</option>
+    <option value="Confirmed">Confirmed</option>
+    <option value="Guessed">Guessed</option>
+    <option value="N/A">N/A</option>
+  </select>
+  <span class="count" id="count">30 of 30</span>
+</div>
+
+<div class="batch-section" id="batchSection">
+  <span class="label">Open LinkedIn:</span>
+  <span class="tip">Allow popups for the launcher tab.</span>
+</div>
+
+<div class="table-wrap">
+  <table id="mainTable">
+    <thead>
+      <tr>
+        <th class="li-col" onclick="sortBy('li')">LI</th>
+        <th onclick="sortBy('name')">Name</th>
+        <th onclick="sortBy('event')">Event</th>
+        <th onclick="sortBy('status')">Status</th>
+        <th onclick="sortBy('type')">Type</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+<script>
+// [name, event, linkedin_url_or_null, status, type]
+const RAW = [
+  ["Sonam Velani",        "Annie & Everett — New Senior Associates", "https://linkedin.com/in/sonamvelani",              "Confirmed", "VC"],
+  ["Annie McCluskey",     "Annie & Everett — New Senior Associates", "https://linkedin.com/in/anniemccluskey",           "Confirmed", "VC"],
+  ["Everett Sanderson",   "Annie & Everett — New Senior Associates", null,                                               "N/A",       "VC"],
+  ["Michelle Gonzalez",   "Annie & Everett — New Senior Associates", "https://www.linkedin.com/in/michellehgonzalez",   "Guessed",   "VC"],
+  ["Danielle Joseph",     "Annie & Everett — New Senior Associates", "https://www.linkedin.com/in/danielle-joseph-71790026/", "Guessed", "Impact Investor"],
+  ["Erum Azeez Khan",     "Annie & Everett — New Senior Associates", "https://www.linkedin.com/in/erumazeez/",          "Guessed",   "Founder/Operator"],
+  ["Kevin Dowd",          "Annie & Everett — New Senior Associates", "https://www.linkedin.com/in/kevin-dowd-7ba281a8/","Guessed",   "Consultant/Advisor"],
+  ["Alex Logan",          "Annie & Everett — New Senior Associates", "https://linkedin.com/in/alex-logan-cecil",        "Confirmed", "Unknown"],
+  ["Amber Quiñones",      "Annie & Everett — New Senior Associates", "https://linkedin.com/in/amberquinones",           "Confirmed", "Unknown"],
+  ["Avery Kayle",         "Annie & Everett — New Senior Associates", "https://linkedin.com/in/avery-kayle",             "Confirmed", "Unknown"],
+  ["Cassia Attard",       "Annie & Everett — New Senior Associates", "https://linkedin.com/in/cassia-attard",           "Confirmed", "Unknown"],
+  ["Chaarvi Badani",      "Annie & Everett — New Senior Associates", "https://linkedin.com/in/chaarvi-badani",          "Confirmed", "Unknown"],
+  ["Dan Wojno",           "Annie & Everett — New Senior Associates", "https://linkedin.com/in/danielwojno",             "Confirmed", "Unknown"],
+  ["Emery Sorvino",       "Annie & Everett — New Senior Associates", "https://linkedin.com/in/emery-sorvino-b629b7103", "Confirmed", "Unknown"],
+  ["Emily Schwartz",      "Annie & Everett — New Senior Associates", "https://linkedin.com/in/euschwartz",              "Confirmed", "Unknown"],
+  ["Emmanuelle Hopkinson","Annie & Everett — New Senior Associates", null,                                               "N/A",       "Unknown"],
+  ["Erika Augustine",     "Annie & Everett — New Senior Associates", null,                                               "N/A",       "Unknown"],
+  ["Evi Yeung",           "Annie & Everett — New Senior Associates", null,                                               "N/A",       "Unknown"],
+  ["Gina Kim",            "Annie & Everett — New Senior Associates", null,                                               "N/A",       "Unknown"],
+  ["Hannah Thibodeau",    "Annie & Everett — New Senior Associates", null,                                               "N/A",       "Unknown"],
+  ["Isabelle Zaleski",    "Annie & Everett — New Senior Associates", null,                                               "N/A",       "Unknown"],
+  ["Jamie Herman",        "Annie & Everett — New Senior Associates", null,                                               "N/A",       "Unknown"],
+  ["Magda Seretny",       "Annie & Everett — New Senior Associates", null,                                               "N/A",       "Unknown"],
+  ["Margaret Kamau",      "Annie & Everett — New Senior Associates", null,                                               "N/A",       "Unknown"],
+  ["Paula Rozo",          "Annie & Everett — New Senior Associates", null,                                               "N/A",       "Unknown"],
+  ["Rachel Tong",         "Annie & Everett — New Senior Associates", null,                                               "N/A",       "Unknown"],
+  ["Raquel Castillo",     "Annie & Everett — New Senior Associates", null,                                               "N/A",       "Unknown"],
+  ["Sarah Sholom",        "Annie & Everett — New Senior Associates", null,                                               "N/A",       "Unknown"],
+  ["Shreya Doshi",        "Annie & Everett — New Senior Associates", null,                                               "N/A",       "Unknown"],
+  ["Yashi Agarwal",       "Annie & Everett — New Senior Associates", null,                                               "N/A",       "Unknown"],
+];
+
+const TYPE_ORDER = ["VC","LP","Impact Investor","Investor","Founder/Operator","Policy/NGO","Academic/Research","Consultant/Advisor","Unknown"];
+const STATUS_ORDER = ["Confirmed","Guessed","N/A"];
+
+function typeRank(t) { const i = TYPE_ORDER.indexOf(t); return i === -1 ? 99 : i; }
+function statusRank(s) { const i = STATUS_ORDER.indexOf(s); return i === -1 ? 99 : i; }
+
+let data = RAW.map(r => ({ name: r[0], event: r[1], linkedin: r[2], status: r[3], type: r[4] }));
+let filtered = [...data];
+let sortCol = null, sortDir = 1;
+
+function defaultSort(a, b) {
+  const td = typeRank(a.type) - typeRank(b.type);
+  if (td !== 0) return td;
+  const sd = statusRank(a.status) - statusRank(b.status);
+  if (sd !== 0) return sd;
+  return a.name.localeCompare(b.name);
+}
+
+function applyFilters() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const ft = document.getElementById('filterType').value;
+  const fs = document.getElementById('filterStatus').value;
+  filtered = data.filter(r =>
+    (!q || r.name.toLowerCase().includes(q)) &&
+    (!ft || r.type === ft) &&
+    (!fs || r.status === fs)
+  );
+  if (sortCol) {
+    filtered.sort((a, b) => {
+      let av = a[sortCol] || '', bv = b[sortCol] || '';
+      if (sortCol === 'type') { av = typeRank(a.type); bv = typeRank(b.type); return (av - bv) * sortDir; }
+      if (sortCol === 'status') { av = statusRank(a.status); bv = statusRank(b.status); return (av - bv) * sortDir; }
+      return av.localeCompare(bv) * sortDir;
+    });
+  } else {
+    filtered.sort(defaultSort);
+  }
+  render();
+}
+
+function sortBy(col) {
+  if (sortCol === col) { sortDir *= -1; }
+  else { sortCol = col; sortDir = 1; }
+  document.querySelectorAll('thead th').forEach(th => th.classList.remove('sort-asc','sort-desc'));
+  const idx = ['li','name','event','status','type'];
+  const th = document.querySelectorAll('thead th')[idx.indexOf(col)];
+  if (th) th.classList.add(sortDir === 1 ? 'sort-asc' : 'sort-desc');
+  applyFilters();
+}
+
+const LI_SVG = `<svg width="20" height="20" viewBox="0 0 24 24" fill="#0a66c2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>`;
+
+function typeBadgeClass(t) {
+  const m = { 'VC':'vc','LP':'lp','Impact Investor':'impact','Investor':'investor','Founder/Operator':'founder','Policy/NGO':'policy','Academic/Research':'academic','Consultant/Advisor':'consultant','Unknown':'unknown' };
+  return 'badge badge-' + (m[t] || 'unknown');
+}
+
+function render() {
+  const tbody = document.getElementById('tbody');
+  document.getElementById('count').textContent = filtered.length + ' of ' + data.length;
+  updateBatchButtons();
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="no-results">No results found.</td></tr>';
+    return;
+  }
+  let html = '';
+  filtered.forEach((r, i) => {
+    if (i % 10 === 0) {
+      const batch = Math.floor(i / 10) + 1;
+      const start = i + 1, end = Math.min(i + 10, filtered.length);
+      html += `<tr class="batch-divider"><td colspan="5">Batch ${batch} · rows ${start}–${end}</td></tr>`;
+    }
+    const liCell = r.linkedin
+      ? `<a class="li-link" href="${r.linkedin}" target="_blank" rel="noopener">${LI_SVG}</a>`
+      : `<span class="li-link dim">${LI_SVG}</span>`;
+    const statusClass = r.status === 'Confirmed' ? 'badge-confirmed' : r.status === 'Guessed' ? 'badge-guessed' : 'badge-na';
+    html += `<tr>
+      <td class="li-col">${liCell}</td>
+      <td class="name-col">${r.name}</td>
+      <td><span class="badge badge-event">${r.event}</span></td>
+      <td><span class="badge ${statusClass}">${r.status}</span></td>
+      <td><span class="${typeBadgeClass(r.type)}">${r.type}</span></td>
+    </tr>`;
+  });
+  tbody.innerHTML = html;
+}
+
+function updateBatchButtons() {
+  const section = document.getElementById('batchSection');
+  const urls = filtered.map(r => r.linkedin).filter(Boolean);
+  const existing = section.querySelectorAll('.batch-btn');
+  existing.forEach(b => b.remove());
+  if (!urls.length) return;
+  const batches = Math.ceil(urls.length / 10);
+  for (let b = 0; b < batches; b++) {
+    const slice = urls.slice(b * 10, b * 10 + 10);
+    const btn = document.createElement('button');
+    btn.className = 'batch-btn';
+    btn.textContent = batches > 1 ? `Batch ${b+1} (${slice.length})` : `Open All LinkedIn (${slice.length})`;
+    btn.onclick = (function(u) {
+      return function() {
+        const script = u.map(url => `window.open(${JSON.stringify(url)},'_blank');`).join('');
+        const page = `<html><body><script>window.onload=function(){${script}window.close();}<\/script><p style="font-family:sans-serif;padding:20px">Opening ${u.length} tabs…</p></body></html>`;
+        const blob = new Blob([page], {type:'text/html'});
+        window.open(URL.createObjectURL(blob), '_blank');
+      };
+    })(slice);
+    section.insertBefore(btn, section.querySelector('.tip'));
+  }
+}
+
+applyFilters();
+</script>
+</body>
+</html>
