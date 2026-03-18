@@ -7,96 +7,122 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f9fa; color: #1a1a1a; }
+
   .header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 20px 28px; }
   .header h1 { font-size: 18px; font-weight: 700; color: #111; }
   .header p { font-size: 13px; color: #6b7280; margin-top: 3px; }
-  .controls { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 14px 28px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-  .controls input { border: 1px solid #d1d5db; border-radius: 6px; padding: 7px 11px; font-size: 13px; width: 200px; outline: none; }
-  .controls input:focus { border-color: #6366f1; }
-  .controls select { border: 1px solid #d1d5db; border-radius: 6px; padding: 7px 11px; font-size: 13px; background: #fff; cursor: pointer; outline: none; }
+
+  /* Segment cards */
+  .seg-cards { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 14px 28px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .seg-card { border: 2px solid #e5e7eb; border-radius: 10px; padding: 8px 16px; cursor: pointer; font-size: 12px; font-weight: 600; color: #374151; background: #fff; transition: all 0.15s; white-space: nowrap; }
+  .seg-card:hover { border-color: #818cf8; background: #f0f0ff; }
+  .seg-card.active { border-color: #6366f1; background: #eef2ff; color: #4338ca; }
+  .seg-card .count { font-weight: 400; color: #9ca3af; margin-left: 4px; }
+  .seg-card.active .count { color: #818cf8; }
+
+  /* Controls */
+  .controls { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 10px 28px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .controls input[type="text"] { border: 1px solid #d1d5db; border-radius: 6px; padding: 6px 11px; font-size: 13px; width: 180px; outline: none; }
+  .controls input[type="text"]:focus { border-color: #6366f1; }
+  .controls select { border: 1px solid #d1d5db; border-radius: 6px; padding: 6px 11px; font-size: 13px; background: #fff; cursor: pointer; outline: none; }
   .controls select:focus { border-color: #6366f1; }
+  .filter-starred-wrap { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #374151; cursor: pointer; }
+  .filter-starred-wrap input { cursor: pointer; }
   .row-count { font-size: 13px; color: #6b7280; margin-left: auto; }
+  #resetOrderBtn { display: none; font-size: 12px; background: #f0f0ff; color: #4f46e5; border: 1px solid #c7d2fe; border-radius: 5px; padding: 4px 10px; cursor: pointer; }
+  #resetOrderBtn:hover { background: #e0e7ff; }
+  #openStarredBtn { display: none; font-size: 12px; background: #fffbeb; color: #b45309; border: 1px solid #fde68a; border-radius: 5px; padding: 4px 10px; cursor: pointer; }
+  #openStarredBtn:hover { background: #fef3c7; }
+
+  /* Batch bar */
   .batch-bar { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 10px 28px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  .batch-bar span { font-size: 12px; color: #9ca3af; margin-right: 4px; }
+  .batch-bar span.lbl { font-size: 12px; color: #9ca3af; margin-right: 4px; }
   .batch-btn { font-size: 12px; font-weight: 600; background: #f0f0ff; color: #4f46e5; border: 1px solid #c7d2fe; border-radius: 5px; padding: 4px 10px; cursor: pointer; white-space: nowrap; }
   .batch-btn:hover { background: #e0e7ff; }
-  .popup-tip { font-size: 11px; color: #9ca3af; margin-left: 6px; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  thead th { background: #f9fafb; border-bottom: 2px solid #e5e7eb; padding: 10px 14px; text-align: left; font-weight: 600; font-size: 12px; color: #374151; cursor: pointer; user-select: none; white-space: nowrap; }
-  thead th:hover { background: #f1f5f9; }
+  .popup-tip { font-size: 11px; color: #9ca3af; margin-left: 4px; }
+
+  /* Table */
+  .table-wrap { overflow: auto; max-height: 75vh; border-radius: 0 0 12px 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; background: white; }
+  thead th { position: sticky; top: 0; z-index: 10; background: #f5f7ff; box-shadow: 0 2px 0 #e8ecff; padding: 10px 14px; text-align: left; font-weight: 600; font-size: 12px; color: #374151; cursor: pointer; user-select: none; white-space: nowrap; }
+  thead th:hover { background: #eef2ff; }
   thead th .sort-icon { display: inline-block; margin-left: 4px; color: #9ca3af; }
+  thead th.no-sort { cursor: default; }
+  thead th.no-sort:hover { background: #f5f7ff; }
   tbody tr { border-bottom: 1px solid #f0f0f0; transition: background 0.1s; }
   tbody tr:hover { background: #fafbff; }
+  tbody tr.worth-meeting { background: #fffde7; }
+  tbody tr.worth-meeting:hover { background: #fff9c4; }
   tbody td { padding: 9px 14px; vertical-align: middle; }
-  .batch-divider td { background: #f4f4f8; font-size: 11px; font-weight: 600; color: #9ca3af; letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 14px; }
-  .li-icon { display: inline-flex; align-items: center; }
-  .li-icon a { display: inline-flex; }
-  .li-icon svg { display: block; }
-  .li-dim { opacity: 0.15; }
-  .name { font-weight: 600; color: #111; }
+
+  /* Badges */
   .badge { display: inline-block; font-size: 11px; font-weight: 600; border-radius: 99px; padding: 2px 9px; white-space: nowrap; }
-  /* Event badge */
-  .ev-energy { background: #fef3c7; color: #92400e; }
-  /* Status badges */
+  .tag-priority { background: #fffde7; color: #b45309; }
+  .tag-vc       { background: #ede9fe; color: #5b21b6; }
+  .tag-lp       { background: #dbeafe; color: #1e40af; }
+  .tag-impact   { background: #d1fae5; color: #065f46; }
+  .tag-investor { background: #e0f2fe; color: #075985; }
+  .tag-policy   { background: #fce7f3; color: #9d174d; }
+  .tag-founder  { background: #fff7ed; color: #9a3412; }
+  .tag-other    { background: #f3f4f6; color: #6b7280; }
   .st-confirmed { background: #d1fae5; color: #065f46; }
   .st-guessed   { background: #fef9c3; color: #854d0e; }
   .st-na        { background: #f3f4f6; color: #6b7280; }
-  /* Type badges */
-  .tp-vc        { background: #ede9fe; color: #5b21b6; }
-  .tp-lp        { background: #dbeafe; color: #1e40af; }
-  .tp-impact    { background: #d1fae5; color: #065f46; }
-  .tp-investor  { background: #e0f2fe; color: #075985; }
-  .tp-policy    { background: #fce7f3; color: #9d174d; }
-  .tp-academic  { background: #fef3c7; color: #92400e; }
-  .tp-consultant{ background: #f0fdf4; color: #166534; }
-  .tp-founder   { background: #fff7ed; color: #9a3412; }
-  .tp-operator  { background: #f0f9ff; color: #0c4a6e; }
-  .tp-unknown   { background: #f3f4f6; color: #6b7280; }
-  .table-wrap { overflow-x: auto; }
+
+  /* Name cell */
+  .name { font-weight: 600; color: #111; }
+  .name-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+
+  /* LI icon */
+  .li-icon { display: inline-flex; align-items: center; }
+  .li-icon a { display: inline-flex; }
+
+  /* Checkbox */
+  .cb-star { width: 16px; height: 16px; cursor: pointer; accent-color: #f59e0b; }
+
+  .td-check { width: 36px; }
+  .td-li    { width: 36px; }
+  .td-name  { min-width: 160px; }
+  .td-status { min-width: 100px; }
+  .td-type  { min-width: 130px; }
 </style>
 </head>
 <body>
 
 <div class="header">
   <h1>⚡ Energy & Eggs — Attendees</h1>
-  <p>Wednesday, March 18 · St Jardim, New York · 47 registered · <span id="luma-link"><a href="https://luma.com/o0m086nm" target="_blank" style="color:#6366f1;text-decoration:none;">View on Luma ↗</a></span></p>
+  <p>Wednesday, March 18 · St Jardim, New York · 47 registered · <a href="https://luma.com/o0m086nm" target="_blank" style="color:#6366f1;text-decoration:none;">View on Luma ↗</a></p>
 </div>
+
+<div class="seg-cards" id="segCards"></div>
 
 <div class="controls">
-  <input type="text" id="search" placeholder="Search name…" oninput="render()">
-  <select id="filterType" onchange="render()">
-    <option value="">All types</option>
-    <option value="VC">VC</option>
-    <option value="LP">LP</option>
-    <option value="Impact Investor">Impact Investor</option>
-    <option value="Investor">Investor</option>
-    <option value="Founder/Operator">Founder/Operator</option>
-    <option value="Policy/NGO">Policy/NGO</option>
-    <option value="Consultant/Advisor">Consultant/Advisor</option>
-    <option value="Unknown">Unknown</option>
-  </select>
-  <select id="filterStatus" onchange="render()">
-    <option value="">All statuses</option>
+  <input type="text" id="search" placeholder="Search name…" oninput="renderTable()">
+  <select id="filterStatus" onchange="renderTable()">
+    <option value="">All LinkedIn statuses</option>
     <option value="Confirmed">Confirmed</option>
     <option value="Guessed">Guessed</option>
-    <option value="N/A">No URL</option>
+    <option value="N/A">N/A</option>
   </select>
-  <div class="row-count" id="rowCount"></div>
+  <label class="filter-starred-wrap">
+    <input type="checkbox" id="filterStarred" onchange="renderTable()"> Shortlisted only
+  </label>
+  <button id="resetOrderBtn" onclick="resetOrder()">Reset order</button>
+  <button id="openStarredBtn" onclick="openStarred()"></button>
+  <span class="row-count" id="rowCount"></span>
 </div>
 
-<div class="batch-bar" id="batchBar">
-  <span>Open LinkedIn:</span>
-</div>
+<div class="batch-bar" id="batchBar"></div>
 
 <div class="table-wrap">
-<table id="mainTable">
+<table>
   <thead>
     <tr>
-      <th style="width:36px" onclick="sortBy('li')">LI <span class="sort-icon" id="si-li"></span></th>
-      <th onclick="sortBy('name')">Name <span class="sort-icon" id="si-name"></span></th>
-      <th onclick="sortBy('event')">Event <span class="sort-icon" id="si-event"></span></th>
-      <th onclick="sortBy('status')">Status <span class="sort-icon" id="si-status"></span></th>
-      <th onclick="sortBy('type')">Type <span class="sort-icon" id="si-type"></span></th>
+      <th class="td-check no-sort">☆</th>
+      <th class="td-li no-sort">LI</th>
+      <th class="td-name" onclick="sortBy('name')">Name <span class="sort-icon" id="si-name"></span></th>
+      <th class="td-status" onclick="sortBy('status')">LI Status <span class="sort-icon" id="si-status"></span></th>
+      <th class="td-type" onclick="sortBy('type')">Type <span class="sort-icon" id="si-type"></span></th>
     </tr>
   </thead>
   <tbody id="tableBody"></tbody>
@@ -104,7 +130,7 @@
 </div>
 
 <script>
-// [photo_url_or_null, name, event, linkedin_url, status, type]
+// [null, name, event, linkedin_url, li_status, type]
 const DATA = [
   [null, "Sonam Velani",                        "Energy & Eggs", "https://linkedin.com/in/sonamvelani",              "Confirmed", "VC"],
   [null, "Alex Gheorghe",                        "Energy & Eggs", "https://linkedin.com/in/gheorghealexandra",        "Confirmed", "VC"],
@@ -155,154 +181,253 @@ const DATA = [
   [null, "Zack Washer",                          "Energy & Eggs", "https://linkedin.com/in/zackwasher",               "Confirmed", "VC"],
 ];
 
-const TYPE_ORDER  = ["VC","LP","Impact Investor","Investor","Founder/Operator","Policy/NGO","Consultant/Advisor","Unknown"];
-const STATUS_ORDER = ["Confirmed","Guessed","N/A"];
+// --- Segment / priority logic ---
+const TYPE_INVESTOR = new Set(["VC","LP","Impact Investor","Investor"]);
+const TYPE_FOUNDER  = new Set(["Founder/Operator"]);
+const INVESTOR_TYPES_LABEL = { "VC": "VC", "LP": "LP", "Impact Investor": "Impact Investor", "Investor": "Investor" };
 
-const TYPE_CLASS = {
-  "VC":               "tp-vc",
-  "LP":               "tp-lp",
-  "Impact Investor":  "tp-impact",
-  "Investor":         "tp-investor",
-  "Policy/NGO":       "tp-policy",
-  "Academic/Research":"tp-academic",
-  "Consultant/Advisor":"tp-consultant",
-  "Founder/Operator": "tp-founder",
-  "Unknown":          "tp-unknown",
+function getSegmentGroup(type) {
+  if (TYPE_INVESTOR.has(type)) return "Investor/VC";
+  if (TYPE_FOUNDER.has(type))  return "Founder";
+  if (type === "Policy/NGO")   return "Policy/NGO";
+  return "Other";
+}
+
+function isWorthMeeting(type) { return TYPE_INVESTOR.has(type) || TYPE_FOUNDER.has(type); }
+
+const SEG_ORDER = { "Investor/VC": 0, "Founder": 1, "Policy/NGO": 2, "Other": 3 };
+const TYPE_ORDER_MAP = { "VC": 0, "LP": 1, "Impact Investor": 2, "Investor": 3, "Founder/Operator": 4, "Policy/NGO": 5 };
+const STATUS_ORDER  = { "Confirmed": 0, "Guessed": 1, "N/A": 2 };
+
+function prioritySort(a, b) {
+  const sa = SEG_ORDER[getSegmentGroup(a[5])] ?? 5, sb = SEG_ORDER[getSegmentGroup(b[5])] ?? 5;
+  if (sa !== sb) return sa - sb;
+  const ta = TYPE_ORDER_MAP[a[5]] ?? 9, tb = TYPE_ORDER_MAP[b[5]] ?? 9;
+  if (ta !== tb) return ta - tb;
+  return (a[1]||'').localeCompare(b[1]||'');
+}
+
+// --- State ---
+const STORE_KEY = 'starred_energy_eggs';
+let activeSeg = 'All';
+let sortCol = null, sortAsc = true;
+let currentData = [...DATA].sort(prioritySort);
+
+function getStarred() { try { return new Set(JSON.parse(localStorage.getItem(STORE_KEY)||'[]')); } catch(e){ return new Set(); } }
+function saveStarred(s) { localStorage.setItem(STORE_KEY, JSON.stringify([...s])); }
+
+function updateOpenStarredBtn() {
+  const s = getStarred();
+  const btn = document.getElementById('openStarredBtn');
+  if (s.size > 0) {
+    btn.style.display = 'inline-block';
+    btn.textContent = `⭐ Open ${s.size} Shortlisted`;
+  } else {
+    btn.style.display = 'none';
+  }
+}
+
+function openStarred() {
+  const s = getStarred();
+  const urls = DATA.filter(r => s.has(r[1]) && r[3]).map(r => r[3]);
+  if (!urls.length) return;
+  const CHUNK = 10;
+  for (let i = 0; i < urls.length; i += CHUNK) {
+    const chunk = urls.slice(i, i + CHUNK);
+    const s2 = chunk.map(u => 'window.open(' + JSON.stringify(u) + ',"_blank");').join('');
+    const p = '<html><body><script>window.onload=function(){' + s2 + 'window.close();}<\/script><p style="font-family:sans-serif;padding:20px">Opening ' + chunk.length + ' tabs…</p></body></html>';
+    window.open(URL.createObjectURL(new Blob([p], {type:'text/html'})), '_blank');
+  }
+}
+
+// --- Segment cards ---
+function buildSegCards() {
+  const groups = ['All', 'Investor/VC', 'Founder', 'Policy/NGO', 'Other'];
+  const counts = { All: DATA.length };
+  DATA.forEach(r => {
+    const g = getSegmentGroup(r[5]);
+    counts[g] = (counts[g]||0) + 1;
+  });
+  const container = document.getElementById('segCards');
+  container.innerHTML = '';
+  groups.forEach(g => {
+    if (!counts[g] && g !== 'All') return;
+    const card = document.createElement('div');
+    card.className = 'seg-card' + (g === activeSeg ? ' active' : '');
+    card.innerHTML = g + '<span class="count">(' + (counts[g]||0) + ')</span>';
+    card.onclick = function() {
+      activeSeg = g;
+      document.querySelectorAll('.seg-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      renderTable();
+    };
+    container.appendChild(card);
+  });
+}
+
+// --- LinkedIn SVG icons ---
+const LI_PATH = `M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z`;
+const LI_BLUE   = `<svg width="20" height="20" viewBox="0 0 24 24" fill="#0a66c2"><path d="${LI_PATH}"/></svg>`;
+const LI_YELLOW = `<svg width="20" height="20" viewBox="0 0 24 24" fill="#FCC200"><path d="${LI_PATH}"/></svg>`;
+const LI_GREY   = `<svg width="20" height="20" viewBox="0 0 24 24" fill="#ccc"><path d="${LI_PATH}"/></svg>`;
+
+// --- Type badge ---
+const TYPE_TAG_CLASS = {
+  "VC":               "tag-vc",
+  "LP":               "tag-lp",
+  "Impact Investor":  "tag-impact",
+  "Investor":         "tag-investor",
+  "Policy/NGO":       "tag-policy",
+  "Founder/Operator": "tag-founder",
 };
 
-const LI_SVG = `<svg width="20" height="20" viewBox="0 0 24 24" fill="#0a66c2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>`;
-
-let sortKey = 'type';
-let sortDir = 1;
-
+// --- Filter & sort ---
 function getFiltered() {
-  const q = document.getElementById('search').value.toLowerCase();
-  const ft = document.getElementById('filterType').value;
+  const q  = document.getElementById('search').value.toLowerCase();
   const fs = document.getElementById('filterStatus').value;
+  const onlyStarred = document.getElementById('filterStarred').checked;
+  const starred = getStarred();
+
   return DATA.filter(r => {
-    const name = r[1].toLowerCase();
-    if (q && !name.includes(q)) return false;
-    if (ft && r[5] !== ft) return false;
+    if (q && !r[1].toLowerCase().includes(q)) return false;
     if (fs && r[4] !== fs) return false;
+    if (activeSeg !== 'All' && getSegmentGroup(r[5]) !== activeSeg) return false;
+    if (onlyStarred && !starred.has(r[1])) return false;
     return true;
   });
 }
 
 function sortData(rows) {
-  const keyIdx = { li: 3, name: 1, event: 2, status: 4, type: 5 };
-  const idx = keyIdx[sortKey] ?? 1;
+  if (!sortCol) return [...rows].sort(prioritySort);
   return [...rows].sort((a, b) => {
-    let va = a[idx] ?? '', vb = b[idx] ?? '';
-    if (sortKey === 'type') {
-      va = TYPE_ORDER.indexOf(a[5]); vb = TYPE_ORDER.indexOf(b[5]);
-      if (va === vb) {
-        const sa = STATUS_ORDER.indexOf(a[4]), sb = STATUS_ORDER.indexOf(b[4]);
-        if (sa !== sb) return (sa - sb) * sortDir;
-        return a[1].localeCompare(b[1]) * sortDir;
-      }
-      return (va - vb) * sortDir;
-    }
-    if (sortKey === 'status') {
-      va = STATUS_ORDER.indexOf(a[4]); vb = STATUS_ORDER.indexOf(b[4]);
-      if (va === vb) return a[1].localeCompare(b[1]) * sortDir;
-      return (va - vb) * sortDir;
-    }
-    return va.toString().localeCompare(vb.toString()) * sortDir;
+    let va, vb;
+    if (sortCol === 'name')   { va = a[1]; vb = b[1]; }
+    if (sortCol === 'status') { va = STATUS_ORDER[a[4]]??9; vb = STATUS_ORDER[b[4]]??9; if (va===vb) return a[1].localeCompare(b[1]); return (va-vb)*(sortAsc?1:-1); }
+    if (sortCol === 'type')   { va = TYPE_ORDER_MAP[a[5]]??9; vb = TYPE_ORDER_MAP[b[5]]??9; if (va===vb) return a[1].localeCompare(b[1]); return (va-vb)*(sortAsc?1:-1); }
+    return (va||'').toString().localeCompare((vb||'').toString()) * (sortAsc ? 1 : -1);
   });
 }
 
-function render() {
+// --- Render table ---
+function renderTable() {
   const filtered = sortData(getFiltered());
   const tbody = document.getElementById('tableBody');
   tbody.innerHTML = '';
   document.getElementById('rowCount').textContent = `${filtered.length} of ${DATA.length}`;
+  const starred = getStarred();
 
-  // Build batch buttons
+  // Batch bar
   const batchBar = document.getElementById('batchBar');
-  batchBar.innerHTML = '<span>Open LinkedIn:</span>';
+  batchBar.innerHTML = '<span class="lbl">Open LinkedIn:</span>';
   const BATCH = 10;
-  const batches = [];
   for (let i = 0; i < filtered.length; i += BATCH) {
     const chunk = filtered.slice(i, i + BATCH);
     const urls = chunk.map(r => r[3]).filter(u => u);
-    const batchNum = Math.floor(i / BATCH) + 1;
-    batches.push({ batchNum, urls, start: i, end: Math.min(i + BATCH - 1, filtered.length - 1) });
-    if (urls.length === 0) continue;
+    if (!urls.length) continue;
     const btn = document.createElement('button');
     btn.className = 'batch-btn';
-    btn.textContent = `Batch ${batchNum} (${urls.length} LI)`;
+    btn.textContent = `Batch ${Math.floor(i/BATCH)+1} (${urls.length})`;
     btn.onclick = (function(u) { return function() {
-      const script = u.map(url => `window.open(${JSON.stringify(url)},'_blank');`).join('');
-      const page = `<html><body><script>window.onload=function(){${script}window.close();}<\/script><p style="font-family:sans-serif;padding:20px">Opening ${u.length} tabs...</p></body></html>`;
-      const blob = new Blob([page], {type: 'text/html'});
-      window.open(URL.createObjectURL(blob), '_blank');
+      const s2 = u.map(x => 'window.open(' + JSON.stringify(x) + ',"_blank");').join('');
+      const p = '<html><body><script>window.onload=function(){' + s2 + 'window.close();}<\/script><p style="font-family:sans-serif;padding:20px">Opening ' + u.length + ' tabs…</p></body></html>';
+      window.open(URL.createObjectURL(new Blob([p], {type:'text/html'})), '_blank');
     }; })(urls);
     batchBar.appendChild(btn);
   }
   const tip = document.createElement('span');
   tip.className = 'popup-tip';
-  tip.textContent = 'Allow popups for the launcher tab';
+  tip.textContent = 'Allow popups when prompted';
   batchBar.appendChild(tip);
 
-  // Build rows
-  filtered.forEach((row, i) => {
-    const batchIdx = Math.floor(i / BATCH);
-    if (i % BATCH === 0 && filtered.length > BATCH) {
-      const divRow = document.createElement('tr');
-      divRow.className = 'batch-divider';
-      divRow.innerHTML = `<td colspan="5">Batch ${batchIdx + 1} · rows ${i + 1}–${Math.min(i + BATCH, filtered.length)}</td>`;
-      tbody.appendChild(divRow);
-    }
-
-    const [photo, name, event, li, status, type] = row;
+  // Rows
+  filtered.forEach(r => {
+    const [, name,, li, status, type] = r;
+    const isStarred = starred.has(name);
+    const worth = isWorthMeeting(type);
     const tr = document.createElement('tr');
+    if (worth) tr.classList.add('worth-meeting');
+    tr.dataset.name = name;
 
-    // LI cell
-    const liCell = document.createElement('td');
-    liCell.innerHTML = li
-      ? `<div class="li-icon"><a href="${li}" target="_blank" rel="noopener">${LI_SVG}</a></div>`
-      : `<div class="li-icon li-dim">${LI_SVG}</div>`;
-    tr.appendChild(liCell);
+    const nameAttr = name.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
 
-    // Name
-    const nameCell = document.createElement('td');
-    nameCell.innerHTML = `<span class="name">${name}</span>`;
-    tr.appendChild(nameCell);
+    // Checkbox
+    const cbTd = document.createElement('td');
+    cbTd.className = 'td-check';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox'; cb.className = 'cb-star'; cb.checked = isStarred;
+    cb.addEventListener('change', function() { toggleStar(name, this); });
+    cbTd.appendChild(cb);
+    tr.appendChild(cbTd);
 
-    // Event
-    const evCell = document.createElement('td');
-    evCell.innerHTML = `<span class="badge ev-energy">${event}</span>`;
-    tr.appendChild(evCell);
+    // LI icon
+    const liTd = document.createElement('td');
+    liTd.className = 'td-li';
+    if (li) {
+      const liSvg = status === 'Guessed' ? LI_YELLOW : LI_BLUE;
+      liTd.innerHTML = `<div class="li-icon"><a href="${li}" target="_blank" rel="noopener">${liSvg}</a></div>`;
+    } else {
+      liTd.innerHTML = `<div class="li-icon">${LI_GREY}</div>`;
+    }
+    tr.appendChild(liTd);
+
+    // Name + tags
+    const nameTd = document.createElement('td');
+    nameTd.className = 'td-name';
+    const tpClass = TYPE_TAG_CLASS[type] || 'tag-other';
+    const priorityTag = worth ? `<span class="badge tag-priority">⭐ Priority</span>` : '';
+    nameTd.innerHTML = `<div class="name">${name}</div><div class="name-tags"><span class="badge ${tpClass}">${type}</span>${priorityTag}</div>`;
+    tr.appendChild(nameTd);
 
     // Status
+    const stTd = document.createElement('td');
+    stTd.className = 'td-status';
     const stClass = status === 'Confirmed' ? 'st-confirmed' : status === 'Guessed' ? 'st-guessed' : 'st-na';
-    const stCell = document.createElement('td');
-    stCell.innerHTML = `<span class="badge ${stClass}">${status}</span>`;
-    tr.appendChild(stCell);
+    stTd.innerHTML = `<span class="badge ${stClass}">${status}</span>`;
+    tr.appendChild(stTd);
 
-    // Type
-    const tpClass = TYPE_CLASS[type] || 'tp-unknown';
-    const tpCell = document.createElement('td');
-    tpCell.innerHTML = `<span class="badge ${tpClass}">${type}</span>`;
-    tr.appendChild(tpCell);
+    // Type (segment group for clarity)
+    const typeTd = document.createElement('td');
+    typeTd.className = 'td-type';
+    typeTd.innerHTML = `<span style="color:#6b7280;font-size:12px">${getSegmentGroup(type)}</span>`;
+    tr.appendChild(typeTd);
 
     tbody.appendChild(tr);
   });
 }
 
-function sortBy(key) {
-  if (sortKey === key) { sortDir *= -1; }
-  else { sortKey = key; sortDir = 1; }
-  // Update sort icons
-  ['li','name','event','status','type'].forEach(k => {
-    const el = document.getElementById('si-' + k);
-    if (el) el.textContent = k === sortKey ? (sortDir === 1 ? '↑' : '↓') : '';
-  });
-  render();
+function toggleStar(name, cb) {
+  const s = getStarred();
+  if (cb.checked) s.add(name); else s.delete(name);
+  saveStarred(s);
+  updateOpenStarredBtn();
+  if (document.getElementById('filterStarred').checked) renderTable();
 }
 
-// Initial render
-sortBy('type');
+function sortBy(key) {
+  if (sortCol === key) { sortAsc = !sortAsc; }
+  else { sortCol = key; sortAsc = true; }
+  ['name','status','type'].forEach(k => {
+    const el = document.getElementById('si-' + k);
+    if (el) el.textContent = k === sortCol ? (sortAsc ? '↑' : '↓') : '';
+  });
+  document.getElementById('resetOrderBtn').style.display = 'inline-block';
+  renderTable();
+}
+
+function resetOrder() {
+  sortCol = null; sortAsc = true;
+  ['name','status','type'].forEach(k => {
+    const el = document.getElementById('si-' + k);
+    if (el) el.textContent = '';
+  });
+  document.getElementById('resetOrderBtn').style.display = 'none';
+  renderTable();
+}
+
+// Init
+buildSegCards();
+updateOpenStarredBtn();
+renderTable();
 </script>
 </body>
 </html>
