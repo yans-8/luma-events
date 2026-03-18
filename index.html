@@ -234,7 +234,8 @@ function render() {
     btn.onclick = (function(u) { return function() {
       const script = u.map(url => `window.open(${JSON.stringify(url)},'_blank');`).join('');
       const page = `<html><body><script>window.onload=function(){${script}window.close();}<\/script><p style="font-family:sans-serif;padding:20px">Opening ${u.length} tabs...</p></body></html>`;
-      window.open('data:text/html,' + encodeURIComponent(page), '_blank');
+      const blob = new Blob([page], {type: 'text/html'});
+      window.open(URL.createObjectURL(blob), '_blank');
     }; })(urls);
     batchBar.appendChild(btn);
   }
