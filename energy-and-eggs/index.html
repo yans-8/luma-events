@@ -3,398 +3,282 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Energy & Eggs · Attendees</title>
+<title>Energy &amp; Eggs · Attendees</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f9fa; color: #1a1a1a; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f2ff; color: #1a1a2e; }
 
-  .header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 20px 28px; }
-  .header h1 { font-size: 18px; font-weight: 700; color: #111; }
-  .header p { font-size: 13px; color: #6b7280; margin-top: 3px; }
+  /* ── Header ── */
+  .header { background: white; border-bottom: 1px solid #e8ecff; padding: 18px 28px; display: flex; align-items: center; gap: 16px; }
+  .header-text h1 { font-size: 20px; font-weight: 700; color: #0f3460; }
+  .header-text p  { font-size: 13px; color: #6b7280; margin-top: 3px; }
+  .header-text a  { color: #6366f1; text-decoration: none; }
+  .header-text a:hover { text-decoration: underline; }
 
-  /* Segment cards */
-  .seg-cards { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 14px 28px; display: flex; flex-wrap: wrap; gap: 8px; }
-  .seg-card { border: 2px solid #e5e7eb; border-radius: 10px; padding: 8px 16px; cursor: pointer; font-size: 12px; font-weight: 600; color: #374151; background: #fff; transition: all 0.15s; white-space: nowrap; }
+  /* ── Segment cards ── */
+  .seg-cards { background: white; border-bottom: 1px solid #e8ecff; padding: 14px 28px; display: flex; flex-wrap: wrap; gap: 10px; }
+  .seg-card { border: 2px solid #e8ecff; border-radius: 12px; padding: 10px 18px; cursor: pointer; text-align: center; min-width: 90px; transition: all 0.15s; background: white; }
   .seg-card:hover { border-color: #818cf8; background: #f0f0ff; }
-  .seg-card.active { border-color: #6366f1; background: #eef2ff; color: #4338ca; }
-  .seg-card .count { font-weight: 400; color: #9ca3af; margin-left: 4px; }
-  .seg-card.active .count { color: #818cf8; }
+  .seg-card.active { border-color: #6366f1; background: #eef2ff; }
+  .seg-count { font-size: 22px; font-weight: 700; color: #0f3460; line-height: 1.1; }
+  .seg-card.active .seg-count { color: #4f46e5; }
+  .seg-label { font-size: 11px; color: #6b7280; margin-top: 2px; white-space: nowrap; }
+  .seg-card.active .seg-label { color: #6366f1; }
 
-  /* Controls */
-  .controls { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 10px 28px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-  .controls input[type="text"] { border: 1px solid #d1d5db; border-radius: 6px; padding: 6px 11px; font-size: 13px; width: 180px; outline: none; }
-  .controls input[type="text"]:focus { border-color: #6366f1; }
-  .controls select { border: 1px solid #d1d5db; border-radius: 6px; padding: 6px 11px; font-size: 13px; background: #fff; cursor: pointer; outline: none; }
+  /* ── Controls ── */
+  .controls { background: white; border-bottom: 1px solid #e8ecff; padding: 10px 28px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .controls input[type="text"] { border: 1px solid #d1d5db; border-radius: 8px; padding: 7px 12px; font-size: 13px; width: 200px; outline: none; }
+  .controls input[type="text"]:focus { border-color: #6366f1; box-shadow: 0 0 0 2px #eef2ff; }
+  .controls select { border: 1px solid #d1d5db; border-radius: 8px; padding: 7px 12px; font-size: 13px; background: white; cursor: pointer; outline: none; }
   .controls select:focus { border-color: #6366f1; }
-  .filter-starred-wrap { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #374151; cursor: pointer; }
-  .filter-starred-wrap input { cursor: pointer; }
-  .row-count { font-size: 13px; color: #6b7280; margin-left: auto; }
-  #resetOrderBtn { display: none; font-size: 12px; background: #f0f0ff; color: #4f46e5; border: 1px solid #c7d2fe; border-radius: 5px; padding: 4px 10px; cursor: pointer; }
+  .starred-toggle { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #374151; cursor: pointer; user-select: none; }
+  .starred-toggle input { cursor: pointer; accent-color: #f59e0b; width: 15px; height: 15px; }
+  .count-badge { font-size: 12px; color: #6b7280; background: #f3f4f6; border-radius: 99px; padding: 3px 10px; margin-left: auto; white-space: nowrap; }
+  #resetOrderBtn { font-size: 12px; background: #f0f0ff; color: #4f46e5; border: 1px solid #c7d2fe; border-radius: 8px; padding: 6px 12px; cursor: pointer; white-space: nowrap; }
   #resetOrderBtn:hover { background: #e0e7ff; }
-  #openStarredBtn { display: none; font-size: 12px; background: #fffbeb; color: #b45309; border: 1px solid #fde68a; border-radius: 5px; padding: 4px 10px; cursor: pointer; }
-  #openStarredBtn:hover { background: #fef3c7; }
 
-  /* Batch bar */
-  .batch-bar { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 10px 28px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  .batch-bar span.lbl { font-size: 12px; color: #9ca3af; margin-right: 4px; }
-  .batch-btn { font-size: 12px; font-weight: 600; background: #f0f0ff; color: #4f46e5; border: 1px solid #c7d2fe; border-radius: 5px; padding: 4px 10px; cursor: pointer; white-space: nowrap; }
+  /* ── Batch buttons ── */
+  .batch-buttons { background: white; border-bottom: 1px solid #e8ecff; padding: 10px 28px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .batch-tip { font-size: 11px; color: #9ca3af; margin-right: 4px; }
+  .batch-btn { font-size: 12px; font-weight: 600; background: #f0f0ff; color: #4f46e5; border: 1px solid #c7d2fe; border-radius: 6px; padding: 5px 12px; cursor: pointer; white-space: nowrap; }
   .batch-btn:hover { background: #e0e7ff; }
-  .popup-tip { font-size: 11px; color: #9ca3af; margin-left: 4px; }
+  .open-starred-btn { font-size: 12px; font-weight: 600; background: #fffbeb; color: #b45309; border: 1px solid #fde68a; border-radius: 6px; padding: 5px 12px; cursor: pointer; }
+  .open-starred-btn:hover { background: #fef3c7; }
 
-  /* Table */
+  /* ── Table ── */
   .table-wrap { overflow: auto; max-height: 75vh; border-radius: 0 0 12px 12px; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; background: white; }
   thead th { position: sticky; top: 0; z-index: 10; background: #f5f7ff; box-shadow: 0 2px 0 #e8ecff; padding: 10px 14px; text-align: left; font-weight: 600; font-size: 12px; color: #374151; cursor: pointer; user-select: none; white-space: nowrap; }
   thead th:hover { background: #eef2ff; }
-  thead th .sort-icon { display: inline-block; margin-left: 4px; color: #9ca3af; }
-  thead th.no-sort { cursor: default; }
-  thead th.no-sort:hover { background: #f5f7ff; }
+  thead th.sorted { background: #eef2ff; color: #4f46e5; }
+  .sort-arrow { display: inline-block; margin-left: 3px; color: #9ca3af; font-size: 11px; }
   tbody tr { border-bottom: 1px solid #f0f0f0; transition: background 0.1s; }
   tbody tr:hover { background: #fafbff; }
   tbody tr.worth-meeting { background: #fffde7; }
   tbody tr.worth-meeting:hover { background: #fff9c4; }
   tbody td { padding: 9px 14px; vertical-align: middle; }
+  .batch-divider td { background: #f5f7ff; font-size: 11px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.06em; padding: 5px 16px; border-bottom: 1px solid #e8ecff; }
 
-  /* Badges */
-  .badge { display: inline-block; font-size: 11px; font-weight: 600; border-radius: 99px; padding: 2px 9px; white-space: nowrap; }
-  .tag-priority { background: #fffde7; color: #b45309; }
-  .tag-vc       { background: #ede9fe; color: #5b21b6; }
-  .tag-lp       { background: #dbeafe; color: #1e40af; }
-  .tag-impact   { background: #d1fae5; color: #065f46; }
-  .tag-investor { background: #e0f2fe; color: #075985; }
-  .tag-policy   { background: #fce7f3; color: #9d174d; }
+  /* ── Expand arrow ── */
+  .td-expand { width: 28px; text-align: center; padding: 0 4px !important; }
+  .expand-btn { background: none; border: none; cursor: pointer; padding: 4px; color: #bbb; font-size: 11px; line-height: 1; transition: color 0.15s, transform 0.2s; display: inline-block; }
+  .expand-btn:hover { color: #0f3460; }
+  .expand-btn.open { transform: rotate(90deg); color: #0f3460; }
+
+  /* ── Shortlist checkbox ── */
+  .td-cb { width: 36px; text-align: center; }
+  .shortlist-cb { width: 16px; height: 16px; cursor: pointer; accent-color: #f59e0b; flex-shrink: 0; }
+
+  /* ── Photo ── */
+  .td-photo { width: 60px; }
+  .avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid #e8ecff; }
+
+  /* ── LI icon ── */
+  .td-li { width: 36px; text-align: center; }
+  .li-link { display: inline-flex; align-items: center; justify-content: center; }
+  .li-link.grey { opacity: 0.15; cursor: default; pointer-events: none; }
+
+  /* ── Name cell ── */
+  .td-name { min-width: 140px; }
+  .name-text { font-weight: 600; color: #1a1a2e; display: block; }
+  .tags-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+  .tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .tag-investor { background: #dbeafe; color: #1565c0; }
   .tag-founder  { background: #fff7ed; color: #9a3412; }
+  .tag-press    { background: #fce7f3; color: #9d174d; }
+  .tag-agency   { background: #f0fdf4; color: #166534; }
   .tag-other    { background: #f3f4f6; color: #6b7280; }
-  .st-confirmed { background: #d1fae5; color: #065f46; }
-  .st-guessed   { background: #fef9c3; color: #854d0e; }
-  .st-na        { background: #f3f4f6; color: #6b7280; }
+  .tag-worth    { background: #fef9c3; color: #92400e; }
 
-  /* Name cell */
-  .name { font-weight: 600; color: #111; }
-  .name-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+  /* ── Title cell ── */
+  .td-title { min-width: 104px; }
+  .title-wrap { display: flex; flex-direction: column; gap: 4px; }
+  .badge { display: inline-block; font-size: 10px; font-weight: 700; border-radius: 99px; padding: 2px 8px; white-space: nowrap; width: fit-content; }
+  .badge-csuite    { background: #ede9fe; color: #5b21b6; }
+  .badge-vpdir     { background: #dbeafe; color: #1e40af; }
+  .badge-senior    { background: #d1fae5; color: #065f46; }
+  .badge-associate { background: #f3f4f6; color: #6b7280; }
 
-  /* LI icon */
-  .li-icon { display: inline-flex; align-items: center; }
-  .li-icon a { display: inline-flex; }
+  /* ── Company cell ── */
+  .td-company { min-width: 128px; }
+  .company-cell { display: flex; align-items: center; gap: 7px; }
+  .company-logo { width: 18px; height: 18px; border-radius: 3px; flex-shrink: 0; }
+  .company-name { font-size: 13px; color: #374151; }
 
-  /* Checkbox */
-  .cb-star { width: 16px; height: 16px; cursor: pointer; accent-color: #f59e0b; }
-
-  .td-check { width: 36px; }
-  .td-li    { width: 36px; }
-  .td-name  { min-width: 160px; }
-  .td-status { min-width: 100px; }
-  .td-type  { min-width: 130px; }
+  /* ── About cell ── */
+  .td-about { min-width: 260px; max-width: 480px; width: 35%; }
+  .about-text { font-size: 12px; color: #555; line-height: 1.5; max-height: 2.8em; overflow: hidden; transition: max-height 0.3s ease; }
+  .about-text.expanded { max-height: 600px; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>⚡ Energy & Eggs — Attendees</h1>
-  <p>Wednesday, March 18 · St Jardim, New York · 47 registered · <a href="https://luma.com/o0m086nm" target="_blank" style="color:#6366f1;text-decoration:none;">View on Luma ↗</a></p>
+  <div class="header-text">
+    <h1>⚡ Energy &amp; Eggs — Attendees</h1>
+    <p>Wednesday, March 18 · St Jardim, New York · 47 registered · <a href="https://luma.com/o0m086nm" target="_blank" rel="noopener">View on Luma ↗</a></p>
+  </div>
 </div>
 
-<div class="seg-cards" id="segCards"></div>
+<div class="seg-cards" id="segmentCards"></div>
 
 <div class="controls">
-  <input type="text" id="search" placeholder="Search name…" oninput="renderTable()">
-  <select id="filterStatus" onchange="renderTable()">
-    <option value="">All LinkedIn statuses</option>
-    <option value="Confirmed">Confirmed</option>
-    <option value="Guessed">Guessed</option>
-    <option value="N/A">N/A</option>
+  <input type="text" id="search" placeholder="Search name, title, company…">
+  <select id="filterCompany"><option value="">All Companies</option></select>
+  <select id="filterStatus">
+    <option value="">All Statuses</option>
+    <option value="Confirmed">Confirmed LI</option>
+    <option value="Guessed">Guessed LI</option>
+    <option value="N/A">No LI</option>
   </select>
-  <label class="filter-starred-wrap">
-    <input type="checkbox" id="filterStarred" onchange="renderTable()"> Shortlisted only
+  <label class="starred-toggle">
+    <input type="checkbox" id="filterStarred"> Shortlisted only
   </label>
-  <button id="resetOrderBtn" onclick="resetOrder()">Reset order</button>
-  <button id="openStarredBtn" onclick="openStarred()"></button>
-  <span class="row-count" id="rowCount"></span>
+  <button id="resetOrderBtn" onclick="resetOrder()" style="display:none">&#8635; Reset order</button>
+  <span class="count-badge" id="countBadge">47 of 47</span>
 </div>
 
-<div class="batch-bar" id="batchBar"></div>
+<div class="batch-buttons" id="batchButtons">
+  <span class="batch-tip">Open LinkedIn in batch (allow popups):</span>
+</div>
 
 <div class="table-wrap">
-<table>
-  <thead>
-    <tr>
-      <th class="td-check no-sort">☆</th>
-      <th class="td-li no-sort">LI</th>
-      <th class="td-name" onclick="sortBy('name')">Name <span class="sort-icon" id="si-name"></span></th>
-      <th class="td-status" onclick="sortBy('status')">LI Status <span class="sort-icon" id="si-status"></span></th>
-      <th class="td-type" onclick="sortBy('type')">Type <span class="sort-icon" id="si-type"></span></th>
-    </tr>
-  </thead>
-  <tbody id="tableBody"></tbody>
+<table id="mainTable">
+<thead>
+  <tr>
+    <th class="td-cb" style="cursor:default" title="Shortlist">&#9711;</th>
+    <th class="td-photo" style="cursor:default"></th>
+    <th class="td-li" style="cursor:default">LI</th>
+    <th onclick="sortBy('name')">Name <span class="sort-arrow">&#8597;</span></th>
+    <th onclick="sortBy('title')">Title <span class="sort-arrow">&#8597;</span></th>
+    <th onclick="sortBy('company')">Company <span class="sort-arrow">&#8597;</span></th>
+    <th onclick="sortBy('about')">About <span class="sort-arrow">&#8597;</span></th>
+    <th class="td-expand" style="cursor:default"></th>
+  </tr>
+</thead>
+<tbody id="tbody"></tbody>
 </table>
 </div>
 
 <script>
-// [null, name, event, linkedin_url, li_status, type]
+const D = 'https://cdn.lu.ma/avatars-default/avatar_0.png';
+// [photo_url, name, title, company, company_domain, linkedin_url, li_status, about]
 const DATA = [
-  [null, "Sonam Velani",                        "Energy & Eggs", "https://linkedin.com/in/sonamvelani",              "Confirmed", "VC"],
-  [null, "Alex Gheorghe",                        "Energy & Eggs", "https://linkedin.com/in/gheorghealexandra",        "Confirmed", "VC"],
-  [null, "Allison Hinckley",                     "Energy & Eggs", "https://linkedin.com/in/allison-hinckley",         "Confirmed", "VC"],
-  [null, "Andrew Jaffoni",                       "Energy & Eggs", "https://linkedin.com/in/ajaffoni",                 "Confirmed", "VC"],
-  [null, "Annie McCluskey",                      "Energy & Eggs", "https://linkedin.com/in/anniemccluskey",           "Confirmed", "VC"],
-  [null, "Aram Ouligian",                        "Energy & Eggs", "https://linkedin.com/in/aram-ouligian-506b06116",  "Confirmed", "VC"],
-  [null, "Asher Goldman",                        "Energy & Eggs", "https://linkedin.com/in/asher-goldman-34085169",   "Confirmed", "Investor"],
-  [null, "Ben Birnbaum (Keyframe)",              "Energy & Eggs", "https://linkedin.com/in/benjaminbirnbaum",         "Confirmed", "VC"],
-  [null, "Ben Carron",                           "Energy & Eggs", "https://linkedin.com/in/Bencarron",                "Confirmed", "Investor"],
-  [null, "Bennett Cohen",                        "Energy & Eggs", "https://linkedin.com/in/bennettrosscohen",         "Confirmed", "VC"],
-  [null, "Ben Wolkon",                           "Energy & Eggs", "https://linkedin.com/in/benjamin-wolkon-93102a48", "Confirmed", "Investor"],
-  [null, "Brandon Blaesser",                     "Energy & Eggs", "https://linkedin.com/in/bblaesser",                "Confirmed", "VC"],
-  [null, "Brendan Hermalyn",                     "Energy & Eggs", "https://linkedin.com/in/bhermalyn",                "Confirmed", "VC"],
-  [null, "Cameron Carver",                       "Energy & Eggs", "https://linkedin.com/in/cameron-carver123",        "Confirmed", "VC"],
-  [null, "Caroline Noble",                       "Energy & Eggs", "https://linkedin.com/in/carolinejnoble",           "Confirmed", "VC"],
-  [null, "Cassia Attard",                        "Energy & Eggs", "https://linkedin.com/in/cassia-attard",            "Confirmed", "Impact Investor"],
-  [null, "Catherine Chien",                      "Energy & Eggs", "https://linkedin.com/in/catherinechien",           "Confirmed", "VC"],
-  [null, "Cordelia Peters",                      "Energy & Eggs", "https://linkedin.com/in/cordelia-peters",          "Confirmed", "VC"],
-  [null, "Deepika Jonnalagadda, Outlander VC",   "Energy & Eggs", "https://linkedin.com/in/deepikajonnalagadda",      "Confirmed", "VC"],
-  [null, "Enki Toto",                            "Energy & Eggs", "https://linkedin.com/in/enkitoto",                 "Confirmed", "Founder/Operator"],
-  [null, "Ethan Sohn",                           "Energy & Eggs", "https://linkedin.com/in/ethansohn",                "Confirmed", "VC"],
-  [null, "Everett Sanderson",                    "Energy & Eggs", "https://linkedin.com/in/everettsanderson",         "Confirmed", "VC"],
-  [null, "Findlay Parke",                        "Energy & Eggs", "https://linkedin.com/in/findlayparke",             "Guessed",   "VC"],
-  [null, "howard yu",                            "Energy & Eggs", "https://linkedin.com/in/howardgyu",                "Guessed",   "VC"],
-  [null, "Jay Kapoor",                           "Energy & Eggs", "https://linkedin.com/in/jaykapoor",                "Confirmed", "VC"],
-  [null, "Jonathan Malawer",                     "Energy & Eggs", "https://linkedin.com/in/jonathan-malawer",         "Confirmed", "Investor"],
-  [null, "Jon Guerster",                         "Energy & Eggs", "https://linkedin.com/in/jon-guerster",             "Confirmed", "VC"],
-  [null, "Josh Kaufman",                         "Energy & Eggs", "https://linkedin.com/in/joshua-kaufman-khasma",    "Confirmed", "Founder/Operator"],
-  [null, "jr@keyframecapital.com",               "Energy & Eggs", "",                                                  "N/A",       "VC"],
-  [null, "Kevin Webb",                           "Energy & Eggs", "https://linkedin.com/in/webbkevin",                "Confirmed", "VC"],
-  [null, "Kim Zou",                              "Energy & Eggs", "https://linkedin.com/in/kim-zou",                  "Confirmed", "VC"],
-  [null, "Lisa Hansmann",                        "Energy & Eggs", "https://linkedin.com/in/lisa-hansmann-88803171",   "Confirmed", "Impact Investor"],
-  [null, "Mairi Robertson",                      "Energy & Eggs", "https://linkedin.com/in/mairi-robertson-b8716345", "Confirmed", "VC"],
-  [null, "Malcolm McClain",                      "Energy & Eggs", "https://linkedin.com/in/malcolm-mcclain-834a1b31", "Confirmed", "Investor"],
-  [null, "Matt Severson",                        "Energy & Eggs", "https://linkedin.com/in/matts3v3rson",             "Confirmed", "VC"],
-  [null, "Micah Kotch",                          "Energy & Eggs", "https://linkedin.com/in/micahjason",               "Confirmed", "Policy/NGO"],
-  [null, "Michael Rhys",                         "Energy & Eggs", "https://linkedin.com/in/michael-rhys",             "Confirmed", "Founder/Operator"],
-  [null, "Mike Gray",                            "Energy & Eggs", "https://linkedin.com/in/michaelgray6",             "Confirmed", "Investor"],
-  [null, "Omar Smith",                           "Energy & Eggs", "https://linkedin.com/in/smithomar",                "Confirmed", "Investor"],
-  [null, "Priyanka Duvvuru",                     "Energy & Eggs", "https://linkedin.com/in/priyankaduv",              "Confirmed", "VC"],
-  [null, "Renee Beaumont",                       "Energy & Eggs", "https://linkedin.com/in/ren%C3%A9e-beaumont-1294131", "Guessed", "Impact Investor"],
-  [null, "Sarah Sclarsic",                       "Energy & Eggs", "https://linkedin.com/in/sarah-sclarsic",           "Confirmed", "VC"],
-  [null, "Tal Chalozin",                         "Energy & Eggs", "https://linkedin.com/in/talchalozin",              "Confirmed", "Founder/Operator"],
-  [null, "Thomas Belazis",                       "Energy & Eggs", "https://linkedin.com/in/thomasbelazis",            "Confirmed", "VC"],
-  [null, "Tom O'Keefe",                          "Energy & Eggs", "https://linkedin.com/in/tom-o-keefe-2763a936",     "Confirmed", "Impact Investor"],
-  [null, "Yi Jean Chow",                         "Energy & Eggs", "https://linkedin.com/in/yijeanchow",               "Confirmed", "VC"],
-  [null, "Zack Washer",                          "Energy & Eggs", "https://linkedin.com/in/zackwasher",               "Confirmed", "VC"],
+  ["https://images.lumacdn.com/avatars/px/c37094d2-b35c-4304-a063-7dcf4964aa4e","Sonam Velani","Co-Founder & Managing Partner","Streetlife Ventures","streetlifeventures.com","https://linkedin.com/in/sonamvelani","Confirmed","I've always been fascinated by the machinery of cities - how infrastructure, technology, and policy shape the way we live. This passion led me to launch Streetlife Ventures, where we invest in startups at the intersection of cities and climate."],
+  [D,"Alex Gheorghe","Investor @ Illuminate Financial | FinTech & Climate","Illuminate Financial","illuminate.financial","https://linkedin.com/in/gheorghealexandra","Confirmed","We cannot solve our problems with the same thinking we used when creating them. Alex is an Investor at Illuminate Financial investing in Seed - Series A fintech & enterprise software startups."],
+  [D,"Allison Hinckley","Senior Principal @ Overture Ventures","Overture Ventures","overture.vc","https://linkedin.com/in/allison-hinckley","Confirmed","I'm a VC investor focused on innovation in climate tech/industrial decarbonization and advanced materials and manufacturing."],
+  [D,"Andrew Jaffoni","Associate Director @ Phillips Academy","Phillips Academy","andover.edu","https://linkedin.com/in/ajaffoni","Confirmed",""],
+  [D,"Annie McCluskey","VC for Nature","Superorganism","superorganism.vc","https://linkedin.com/in/anniemccluskey","Confirmed",""],
+  [D,"Aram Ouligian","Investor at MassMutual Ventures","MassMutual Ventures","mmventures.com","https://linkedin.com/in/aram-ouligian-506b06116","Confirmed",""],
+  [D,"Asher Goldman","Deploying Infrastructure","CLAI Ventures","claiventures.com","https://linkedin.com/in/asher-goldman-34085169","Confirmed",""],
+  ["https://images.lumacdn.com/avatars/vx/73d4146b-ed0f-41c6-887d-b3e7f065e180","Ben Birnbaum","Partner at Keyframe | Co-Founder of TeraWatt Infrastructure","Keyframe","keyframecapital.com","https://linkedin.com/in/benjaminbirnbaum","Confirmed","I am a co-founder of Keyframe, an investment firm with >$1B AUM, and of TeraWatt Infrastructure, an EV-Fleet charging hub developer."],
+  [D,"Ben Carron","Building electric and digital infrastructure","","","https://linkedin.com/in/Bencarron","Confirmed","Specialties: Electricity and Natural Gas Market Analysis, Contract Negotiation Support, Risk Management, Financial Controlling, Energy policy, Macro-economic Analysis, Energy Procurement."],
+  [D,"Bennett Cohen","Director of US Investment at Fortescue Ventures","Fortescue Ventures","fvfund.com","https://linkedin.com/in/bennettrosscohen","Confirmed","Global venture capital and growth equity leader focused on deeptech, industrials, climate, sustainability, energy transition, mobility."],
+  [D,"Ben Wolkon","Decarbonizing","Harvard University","harvard.edu","https://linkedin.com/in/benjamin-wolkon-93102a48","Confirmed",""],
+  [D,"Brandon Blaesser","Sustainability VC","","","https://linkedin.com/in/bblaesser","Confirmed",""],
+  [D,"Brendan Hermalyn","CEO & Founder at Thalo Labs","Thalo Labs","thalolabs.com","https://linkedin.com/in/brendan-hermalyn","Guessed","Scientist and engineer building the systems we need for the future of how we live. Currently, I run Thalo Labs. The built environment hasn't had its SpaceX moment yet. We're fixing that."],
+  [D,"Cameron Carver","","","","","N/A",""],
+  [D,"Caroline Noble","Director of The Monarch Foundation","The Monarch Foundation","monarchfdn.org","https://linkedin.com/in/caroline-noble-398ba7132","Confirmed",""],
+  [D,"Cassia Attard","Analyst at Closed Loop Ventures","Closed Loop Ventures","closedlooppartners.com","https://linkedin.com/in/cassia-attard","Confirmed",""],
+  ["https://images.lumacdn.com/avatars/7w/9e3b3592-0af4-46ed-8ef5-b77a60913db1","Catherine Chien","Climate & Nature Investor and Board Director","TIME","time.com","https://linkedin.com/in/catherinechien","Confirmed",""],
+  [D,"Cordelia Peters","Climate Growth Investor at Blue Earth Capital","Blue Earth Capital","blueearth.ch","https://linkedin.com/in/cordeliapeters","Confirmed",""],
+  ["https://images.lumacdn.com/avatars/xz/5201c659-a637-404e-bf29-041329aa0575.png","Deepika Jonnalagadda","Early Stage Investor at Outlander VC","Outlander VC","outlander.vc","https://linkedin.com/in/deepikajonnalagadda","Confirmed","Investing pre-revenue, pre-product! If you're building something new, reach out at deepika@outlander.vc"],
+  [D,"Enki Toto","Principal, Salesforce Ventures","Salesforce Ventures","salesforceventures.com","https://linkedin.com/in/enkitoto","Confirmed",""],
+  [D,"Ethan Sohn","Climate Fund at Toyota Ventures","Toyota Ventures","ventures.toyota","https://linkedin.com/in/ethan-m-sohn","Confirmed",""],
+  ["https://images.lumacdn.com/avatars/t9/5297bbbd-d6fe-4e97-adf4-0446f22fd237.png","Everett Sanderson","VC for Nature @ Superorganism","Superorganism","superorganism.vc","https://linkedin.com/in/everettsanderson","Confirmed","Everett works at Superorganism, the first venture capital firm dedicated to addressing the drivers of biodiversity loss. Come talk to him about robots, wildfire and extreme weather, oceans, geospatial tech, and infrastructure."],
+  [D,"Findlay Parke","Principal at Caldera Capital","Caldera Capital","calderacapital.com","https://linkedin.com/in/findlayparke","Guessed",""],
+  [D,"Howard Yu","Finance","","","https://linkedin.com/in/howardgyu","Guessed","In the business of building businesses."],
+  ["https://images.lumacdn.com/avatars/ie/9a7cbc12-8676-4cab-9769-d3db41567a47","Jay Kapoor","General Partner @ VSC Ventures","VSC Ventures","vscventures.com","https://linkedin.com/in/jaykapoor","Confirmed","With over a decade of supporting and investing in founders, I launched VSC Ventures to bring content, PR, and storytelling expertise to help portfolio companies break out and get noticed in the crowded startup landscape."],
+  [D,"Jonathan Malawer","Founder, Chief Investment Officer at Pier61 Partners","Pier61 Partners","pier61partners.com","https://linkedin.com/in/jonathan-malawer","Confirmed",""],
+  ["https://images.lumacdn.com/avatars/2c/3850b002-ba8e-4a68-b450-0a4182b6da1f.png","Jon Guerster","Partner at Activate Capital","Activate Capital","activatecapital.com","https://linkedin.com/in/jon-guerster","Confirmed","Investor, board member and advisor for growth oriented energy, space and infrastructure tech businesses. Three time founder and CEO, having raised venture capital, recruited and managed teams, scaled profitable growth and managed successful acquisitions."],
+  [D,"Josh Kaufman","CEO & Founder at Khasma Capital","Khasma Capital","khasmacapital.com","https://linkedin.com/in/joshua-kaufman-khasma","Confirmed","Khasma Capital provides capital and expertise to teams developing sustainable infrastructure projects. Always looking for good connections."],
+  [D,"John Rapaport","CIO at Keyframe Capital","Keyframe Capital","keyframecapital.com","https://linkedin.com/in/john-rapaport","Guessed","Focused on the increasingly interconnected worlds of energy, transportation and the built environment. Passionate about data and unlocking new financial markets."],
+  ["https://images.lumacdn.com/avatars/rz/4ef2b4b4-46f5-4c85-ad13-b331652af90c","Kevin Webb","Co-Founder & Managing Director, Superorganism","Superorganism","superorganism.vc","https://linkedin.com/in/webbkevin","Confirmed",""],
+  [D,"Kim Zou","CEO, Co-founder of Sightline Climate","Sightline Climate","sightlineclimate.com","https://linkedin.com/in/kim-zou","Confirmed",""],
+  [D,"Lisa Hansmann","Foundry-Logic","Foundry-Logic","foundry-logic.com","https://linkedin.com/in/lisa-hansmann-88803171","Confirmed",""],
+  ["https://images.lumacdn.com/avatars/cu/db2bf1a8-0a9d-4a72-b35a-dc58d1797d4d","Mairi Robertson","Director, Capital Markets & Platform Strategy @ Ezra AI","Ezra AI","ezraai.com","https://linkedin.com/in/mairi-robertson-b8716345","Confirmed","Building AI to unlock more capital for frontier technologies. At Ezra, I've developed AI systems that accelerate energy transition investing while originating $200M+ in deals."],
+  [D,"Malcolm McClain","Investor & Operator | Harvard MBA & MPP | RISE Fellow","","","https://linkedin.com/in/malcolm-mcclain-834a1b31","Confirmed","On a mission to build high-growth, enduring, mission-oriented companies and firms. Investor and operator with experience across venture capital, startups, impact investing, and public policy."],
+  [D,"Matt Severson","Climate Investor | Englewood Capital","Englewood Capital","englewoodcapital.com","https://linkedin.com/in/matts3v3rson","Confirmed",""],
+  [D,"Micah Kotch","Investing in industrial impact","ThinkLabs AI","thinklabs.ai","https://linkedin.com/in/micahjason","Confirmed","Outcome oriented leader with broad experience in design, urbantech, mobility, and clean energy. Love for early stage venturing, Lean Startup, and big company business model innovation."],
+  [D,"Michael Rhys","CEO & Cofounder @ Barnwell Bio","Barnwell Bio","barnwellbio.com","https://linkedin.com/in/michael-rhys","Confirmed",""],
+  [D,"Mike Gray","Principal at Remarkable Ventures | Climate & Energy Investor","Remarkable Ventures","remarkableventures.com","https://linkedin.com/in/michaelgray6","Confirmed","Investing in early stage (Seed and Series A) companies that are building the next generation of climate solutions, focused particularly on the energy transition."],
+  [D,"Omar Smith","Early Stage Investor","","","https://linkedin.com/in/smithomar","Confirmed","Currently advising and investing in early-stage start-ups. I've spent my career in and around the future of work, applied AI/ML, climate/sustainability, the industrial economy, and healthcare/wellness."],
+  [D,"Priyanka Duvvuru","Principal, Energy at S2G Investments","S2G Investments","s2ginvestments.com","https://linkedin.com/in/priyanka-duvvuru-1b96b361","Confirmed",""],
+  [D,"Renee Beaumont","Senior Board Advisor, Investor","ReGen Ventures","regenventures.com","https://linkedin.com/in/ren%C3%A9e-beaumont-1294131","Guessed",""],
+  [D,"Sarah Sclarsic","Energy + Climate Tech Investor | Founder + General Partner at Voyager","Voyager Ventures","voyagervc.com","https://linkedin.com/in/sarah-sclarsic-26060a16","Guessed","Technology represents enormous potential to reshape the world for the better. I invest in energy, materials, and industrial startups building climate solutions."],
+  [D,"Tal Chalozin","Co-Founder @ 257.co | Co-Founder @ INNOVID (NYSE:CTV)","257","257.co","https://linkedin.com/in/talchalozin","Confirmed",""],
+  [D,"Thomas Belazis","Director at The Rockefeller Foundation","The Rockefeller Foundation","rockefellerfoundation.org","https://linkedin.com/in/thomas-belazis-130669a","Confirmed","Seasoned investment professional accelerating climate innovation on a global scale. Experience across private equity, venture capital, entrepreneurship, strategy, climate investing (decarbonization, nature-based solutions, climate tech, energy transition)."],
+  [D,"Tom O'Keefe","Climate-tech Investor","Every Electric","everyelectric.com","https://linkedin.com/in/tom-o-keefe-2763a936","Confirmed","I invest in early-stage climate-tech companies with missions complementary to bold, public action to address climate crisis. I'm engaged with organizing and activism around climate policy in NYC."],
+  [D,"Yi Jean Chow","Investment Partner at Clean Energy Ventures","Clean Energy Ventures","cleanenergyventures.com","https://linkedin.com/in/yi-jean-chow","Confirmed",""],
+  [D,"Zack Washer","GTM at Sydecar","Sydecar","sydecar.io","https://linkedin.com/in/zack-washer","Confirmed",""],
 ];
 
-// --- Segment / priority logic ---
-const TYPE_INVESTOR = new Set(["VC","LP","Impact Investor","Investor"]);
-const TYPE_FOUNDER  = new Set(["Founder/Operator"]);
-const INVESTOR_TYPES_LABEL = { "VC": "VC", "LP": "LP", "Impact Investor": "Impact Investor", "Investor": "Investor" };
+// ── Classification helpers ──────────────────────────────────────────────────
 
-function getSegmentGroup(type) {
-  if (TYPE_INVESTOR.has(type)) return "Investor/VC";
-  if (TYPE_FOUNDER.has(type))  return "Founder";
-  if (type === "Policy/NGO")   return "Policy/NGO";
-  return "Other";
+function getSegment(r) {
+  const title   = (r[2]||'').toLowerCase();
+  const company = (r[3]||'').toLowerCase();
+  const about   = (r[7]||'').toLowerCase();
+
+  // Press
+  const pressTitles = ['reporter','journalist','correspondent','editor','producer','writer & editor'];
+  if (pressTitles.some(t => title.includes(t))) return 'Press';
+
+  // PR / Agency
+  if (['account director','account manager','media relations','public relations'].some(t => title.includes(t))) return 'PR/Agency';
+  if (title.includes('communications') && !title.includes('co-founder') && !title.includes('ceo')) return 'PR/Agency';
+
+  // Investor / VC
+  if (company.includes('ventures') || company.includes('capital') || company.includes('investments')) return 'Investor/VC';
+  if (['investor','managing partner','venture partner','general partner','principal'].some(t => title.includes(t))) return 'Investor/VC';
+  if (about.includes('family office') || about.includes('sfo')) return 'Investor/VC';
+  if (about.includes('investing in') && (about.includes('seed') || about.includes('series') || about.includes('fund'))) return 'Investor/VC';
+  if (title.includes('entrepreneur') && title.includes('investor')) return 'Investor/VC';
+
+  // Founder / Startup
+  if (['founder','co-founder','ceo','cofounder'].some(t => title.includes(t))) return 'Founder';
+  if (about.includes('serial entrepreneur')) return 'Founder';
+
+  return 'Other';
 }
 
-function isWorthMeeting(type) { return TYPE_INVESTOR.has(type) || TYPE_FOUNDER.has(type); }
-
-const SEG_ORDER = { "Investor/VC": 0, "Founder": 1, "Policy/NGO": 2, "Other": 3 };
-const TYPE_ORDER_MAP = { "VC": 0, "LP": 1, "Impact Investor": 2, "Investor": 3, "Founder/Operator": 4, "Policy/NGO": 5 };
-const STATUS_ORDER  = { "Confirmed": 0, "Guessed": 1, "N/A": 2 };
-
-function prioritySort(a, b) {
-  const sa = SEG_ORDER[getSegmentGroup(a[5])] ?? 5, sb = SEG_ORDER[getSegmentGroup(b[5])] ?? 5;
-  if (sa !== sb) return sa - sb;
-  const ta = TYPE_ORDER_MAP[a[5]] ?? 9, tb = TYPE_ORDER_MAP[b[5]] ?? 9;
-  if (ta !== tb) return ta - tb;
-  return (a[1]||'').localeCompare(b[1]||'');
+function getSeniority(title) {
+  if (!title) return '';
+  const t = title.toLowerCase();
+  if (/\bceo\b|\bcfo\b|\bcoo\b|\bcto\b|\bcmo\b|chief |managing partner|\bfounder\b|co-founder|cofounder|president/.test(t)) return 'C-Suite';
+  if (/\bvp\b|vice president|\bsvp\b|\bevp\b|\bdirector\b|\bpartner\b/.test(t)) return 'VP/Dir';
+  if (/\bsenior\b|\bsr\.\b|head of|lead |principal|\bmanager\b/.test(t)) return 'Senior';
+  if (/\bassociate\b|\banalyst\b|\bcoordinator\b|account executive|specialist/.test(t)) return 'Associate';
+  return '';
 }
 
-// --- State ---
-const STORE_KEY = 'starred_energy_eggs';
-let activeSeg = 'All';
-let sortCol = null, sortAsc = true;
-let currentData = [...DATA].sort(prioritySort);
-
-function getStarred() { try { return new Set(JSON.parse(localStorage.getItem(STORE_KEY)||'[]')); } catch(e){ return new Set(); } }
-function saveStarred(s) { localStorage.setItem(STORE_KEY, JSON.stringify([...s])); }
-
-function updateOpenStarredBtn() {
-  const s = getStarred();
-  const btn = document.getElementById('openStarredBtn');
-  if (s.size > 0) {
-    btn.style.display = 'inline-block';
-    btn.textContent = `⭐ Open ${s.size} Shortlisted`;
-  } else {
-    btn.style.display = 'none';
-  }
+function isWorthMeeting(seg) {
+  return seg === 'Investor/VC' || seg === 'Founder';
 }
 
-function openStarred() {
-  const s = getStarred();
-  const urls = DATA.filter(r => s.has(r[1]) && r[3]).map(r => r[3]);
-  if (!urls.length) return;
-  const CHUNK = 10;
-  for (let i = 0; i < urls.length; i += CHUNK) {
-    const chunk = urls.slice(i, i + CHUNK);
-    const s2 = chunk.map(u => 'window.open(' + JSON.stringify(u) + ',"_blank");').join('');
-    const p = '<html><body><script>window.onload=function(){' + s2 + 'window.close();}<\/script><p style="font-family:sans-serif;padding:20px">Opening ' + chunk.length + ' tabs…</p></body></html>';
-    window.open(URL.createObjectURL(new Blob([p], {type:'text/html'})), '_blank');
-  }
-}
+// ── Expanded rows ────────────────────────────────────────────────────────────
 
-// --- Segment cards ---
-function buildSegCards() {
-  const groups = ['All', 'Investor/VC', 'Founder', 'Policy/NGO', 'Other'];
-  const counts = { All: DATA.length };
-  DATA.forEach(r => {
-    const g = getSegmentGroup(r[5]);
-    counts[g] = (counts[g]||0) + 1;
-  });
-  const container = document.getElementById('segCards');
-  container.innerHTML = '';
-  groups.forEach(g => {
-    if (!counts[g] && g !== 'All') return;
-    const card = document.createElement('div');
-    card.className = 'seg-card' + (g === activeSeg ? ' active' : '');
-    card.innerHTML = g + '<span class="count">(' + (counts[g]||0) + ')</span>';
-    card.onclick = function() {
-      activeSeg = g;
-      document.querySelectorAll('.seg-card').forEach(c => c.classList.remove('active'));
-      card.classList.add('active');
-      renderTable();
-    };
-    container.appendChild(card);
+const expandedRows = new Set();
+
+function toggleExpand(name) {
+  if (expandedRows.has(name)) expandedRows.delete(name); else expandedRows.add(name);
+  document.querySelectorAll('tr[data-name]').forEach(tr => {
+    if (tr.dataset.name !== name) return;
+    const expanded = expandedRows.has(name);
+    const aboutDiv = tr.querySelector('.about-text');
+    const btn      = tr.querySelector('.expand-btn');
+    if (aboutDiv) aboutDiv.classList.toggle('expanded', expanded);
+    if (btn)      btn.classList.toggle('open', expanded);
   });
 }
 
-// --- LinkedIn SVG icons ---
-const LI_PATH = `M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z`;
-const LI_BLUE   = `<svg width="20" height="20" viewBox="0 0 24 24" fill="#0a66c2"><path d="${LI_PATH}"/></svg>`;
-const LI_YELLOW = `<svg width="20" height="20" viewBox="0 0 24 24" fill="#FCC200"><path d="${LI_PATH}"/></svg>`;
-const LI_GREY   = `<svg width="20" height="20" viewBox="0 0 24 24" fill="#ccc"><path d="${LI_PATH}"/></svg>`;
+// ── Shortlist ─────────────────────────────────────────────────────────────────
 
-// --- Type badge ---
-const TYPE_TAG_CLASS = {
-  "VC":               "tag-vc",
-  "LP":               "tag-lp",
-  "Impact Investor":  "tag-impact",
-  "Investor":         "tag-investor",
-  "Policy/NGO":       "tag-policy",
-  "Founder/Operator": "tag-founder",
-};
-
-// --- Filter & sort ---
-function getFiltered() {
-  const q  = document.getElementById('search').value.toLowerCase();
-  const fs = document.getElementById('filterStatus').value;
-  const onlyStarred = document.getElementById('filterStarred').checked;
-  const starred = getStarred();
-
-  return DATA.filter(r => {
-    if (q && !r[1].toLowerCase().includes(q)) return false;
-    if (fs && r[4] !== fs) return false;
-    if (activeSeg !== 'All' && getSegmentGroup(r[5]) !== activeSeg) return false;
-    if (onlyStarred && !starred.has(r[1])) return false;
-    return true;
-  });
+const STORE_KEY = 'energy_eggs_starred';
+function getStarred() {
+  try { return new Set(JSON.parse(localStorage.getItem(STORE_KEY) || '[]')); } catch { return new Set(); }
 }
-
-function sortData(rows) {
-  if (!sortCol) return [...rows].sort(prioritySort);
-  return [...rows].sort((a, b) => {
-    let va, vb;
-    if (sortCol === 'name')   { va = a[1]; vb = b[1]; }
-    if (sortCol === 'status') { va = STATUS_ORDER[a[4]]??9; vb = STATUS_ORDER[b[4]]??9; if (va===vb) return a[1].localeCompare(b[1]); return (va-vb)*(sortAsc?1:-1); }
-    if (sortCol === 'type')   { va = TYPE_ORDER_MAP[a[5]]??9; vb = TYPE_ORDER_MAP[b[5]]??9; if (va===vb) return a[1].localeCompare(b[1]); return (va-vb)*(sortAsc?1:-1); }
-    return (va||'').toString().localeCompare((vb||'').toString()) * (sortAsc ? 1 : -1);
-  });
-}
-
-// --- Render table ---
-function renderTable() {
-  const filtered = sortData(getFiltered());
-  const tbody = document.getElementById('tableBody');
-  tbody.innerHTML = '';
-  document.getElementById('rowCount').textContent = `${filtered.length} of ${DATA.length}`;
-  const starred = getStarred();
-
-  // Batch bar
-  const batchBar = document.getElementById('batchBar');
-  batchBar.innerHTML = '<span class="lbl">Open LinkedIn:</span>';
-  const BATCH = 10;
-  for (let i = 0; i < filtered.length; i += BATCH) {
-    const chunk = filtered.slice(i, i + BATCH);
-    const urls = chunk.map(r => r[3]).filter(u => u);
-    if (!urls.length) continue;
-    const btn = document.createElement('button');
-    btn.className = 'batch-btn';
-    btn.textContent = `Batch ${Math.floor(i/BATCH)+1} (${urls.length})`;
-    btn.onclick = (function(u) { return function() {
-      const s2 = u.map(x => 'window.open(' + JSON.stringify(x) + ',"_blank");').join('');
-      const p = '<html><body><script>window.onload=function(){' + s2 + 'window.close();}<\/script><p style="font-family:sans-serif;padding:20px">Opening ' + u.length + ' tabs…</p></body></html>';
-      window.open(URL.createObjectURL(new Blob([p], {type:'text/html'})), '_blank');
-    }; })(urls);
-    batchBar.appendChild(btn);
-  }
-  const tip = document.createElement('span');
-  tip.className = 'popup-tip';
-  tip.textContent = 'Allow popups when prompted';
-  batchBar.appendChild(tip);
-
-  // Rows
-  filtered.forEach(r => {
-    const [, name,, li, status, type] = r;
-    const isStarred = starred.has(name);
-    const worth = isWorthMeeting(type);
-    const tr = document.createElement('tr');
-    if (worth) tr.classList.add('worth-meeting');
-    tr.dataset.name = name;
-
-    const nameAttr = name.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-
-    // Checkbox
-    const cbTd = document.createElement('td');
-    cbTd.className = 'td-check';
-    const cb = document.createElement('input');
-    cb.type = 'checkbox'; cb.className = 'cb-star'; cb.checked = isStarred;
-    cb.addEventListener('change', function() { toggleStar(name, this); });
-    cbTd.appendChild(cb);
-    tr.appendChild(cbTd);
-
-    // LI icon
-    const liTd = document.createElement('td');
-    liTd.className = 'td-li';
-    if (li) {
-      const liSvg = status === 'Guessed' ? LI_YELLOW : LI_BLUE;
-      liTd.innerHTML = `<div class="li-icon"><a href="${li}" target="_blank" rel="noopener">${liSvg}</a></div>`;
-    } else {
-      liTd.innerHTML = `<div class="li-icon">${LI_GREY}</div>`;
-    }
-    tr.appendChild(liTd);
-
-    // Name + tags
-    const nameTd = document.createElement('td');
-    nameTd.className = 'td-name';
-    const tpClass = TYPE_TAG_CLASS[type] || 'tag-other';
-    const priorityTag = worth ? `<span class="badge tag-priority">⭐ Priority</span>` : '';
-    nameTd.innerHTML = `<div class="name">${name}</div><div class="name-tags"><span class="badge ${tpClass}">${type}</span>${priorityTag}</div>`;
-    tr.appendChild(nameTd);
-
-    // Status
-    const stTd = document.createElement('td');
-    stTd.className = 'td-status';
-    const stClass = status === 'Confirmed' ? 'st-confirmed' : status === 'Guessed' ? 'st-guessed' : 'st-na';
-    stTd.innerHTML = `<span class="badge ${stClass}">${status}</span>`;
-    tr.appendChild(stTd);
-
-    // Type (segment group for clarity)
-    const typeTd = document.createElement('td');
-    typeTd.className = 'td-type';
-    typeTd.innerHTML = `<span style="color:#6b7280;font-size:12px">${getSegmentGroup(type)}</span>`;
-    tr.appendChild(typeTd);
-
-    tbody.appendChild(tr);
-  });
-}
-
+function saveStarred(set) { localStorage.setItem(STORE_KEY, JSON.stringify([...set])); }
 function toggleStar(name, cb) {
   const s = getStarred();
   if (cb.checked) s.add(name); else s.delete(name);
@@ -403,29 +287,253 @@ function toggleStar(name, cb) {
   if (document.getElementById('filterStarred').checked) renderTable();
 }
 
-function sortBy(key) {
-  if (sortCol === key) { sortAsc = !sortAsc; }
-  else { sortCol = key; sortAsc = true; }
-  ['name','status','type'].forEach(k => {
-    const el = document.getElementById('si-' + k);
-    if (el) el.textContent = k === sortCol ? (sortAsc ? '↑' : '↓') : '';
-  });
-  document.getElementById('resetOrderBtn').style.display = 'inline-block';
-  renderTable();
+// ── LI icons ─────────────────────────────────────────────────────────────────
+
+const LI_PATH = `M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z`;
+const LI_SVG        = `<svg width="20" height="20" viewBox="0 0 24 24" fill="#0a66c2"><path d="${LI_PATH}"/></svg>`;
+const LI_SVG_YELLOW = `<svg width="20" height="20" viewBox="0 0 24 24" fill="#FCC200"><path d="${LI_PATH}"/></svg>`;
+const LI_SVG_GREY   = `<svg width="20" height="20" viewBox="0 0 24 24" fill="#ccc"><path d="${LI_PATH}"/></svg>`;
+
+const SEG_CONFIG = {
+  'Investor/VC': { cls: 'tag-investor', label: 'Investor/VC' },
+  'Founder':     { cls: 'tag-founder',  label: 'Founder'     },
+  'Press':       { cls: 'tag-press',    label: 'Press'        },
+  'PR/Agency':   { cls: 'tag-agency',   label: 'PR/Agency'    },
+  'Other':       { cls: 'tag-other',    label: 'Other'        },
+};
+
+// ── State ─────────────────────────────────────────────────────────────────────
+
+let sortCol = null, sortAsc = true;
+let activeSegment = 'all';
+
+const SEG_ORDER      = { 'Investor/VC': 0, 'Founder': 1, 'Other': 2, 'Press': 3, 'PR/Agency': 4 };
+const SENIORITY_ORDER = { 'C-Suite': 0, 'VP/Dir': 1, 'Senior': 2, 'Associate': 3, '': 4 };
+
+function prioritySort(a, b) {
+  const sa = SEG_ORDER[getSegment(a)] ?? 5, sb = SEG_ORDER[getSegment(b)] ?? 5;
+  if (sa !== sb) return sa - sb;
+  const ra = SENIORITY_ORDER[getSeniority(a[2])] ?? 4, rb = SENIORITY_ORDER[getSeniority(b[2])] ?? 4;
+  if (ra !== rb) return ra - rb;
+  return (a[1]||'').localeCompare(b[1]||'');
 }
+
+let currentData = [...DATA].sort(prioritySort);
+
+// ── Segment cards ─────────────────────────────────────────────────────────────
+
+function buildSegmentCards() {
+  const counts = { all: DATA.length, 'Investor/VC': 0, 'Founder': 0, 'Press': 0, 'PR/Agency': 0, 'Other': 0 };
+  DATA.forEach(r => { const s = getSegment(r); counts[s] = (counts[s]||0) + 1; });
+
+  const labels = [
+    { seg: 'all',         emoji: '👥', label: 'All' },
+    { seg: 'Investor/VC', emoji: '💼', label: 'Investor / VC' },
+    { seg: 'Founder',     emoji: '🚀', label: 'Founders' },
+    { seg: 'Other',       emoji: '🔹', label: 'Other' },
+  ];
+
+  const container = document.getElementById('segmentCards');
+  container.innerHTML = '';
+  labels.forEach(({ seg, emoji, label }) => {
+    if (!counts[seg] && seg !== 'all') return;
+    const card = document.createElement('div');
+    card.className = 'seg-card' + (seg === activeSegment ? ' active' : '');
+    card.dataset.seg = seg;
+    card.innerHTML = `<div class="seg-count">${counts[seg] || 0}</div><div class="seg-label">${emoji} ${label}</div>`;
+    card.addEventListener('click', () => {
+      activeSegment = seg;
+      document.querySelectorAll('.seg-card').forEach(c => c.classList.toggle('active', c.dataset.seg === seg));
+      renderTable();
+    });
+    container.appendChild(card);
+  });
+}
+
+// ── Open-starred button ───────────────────────────────────────────────────────
+
+function updateOpenStarredBtn() {
+  const starred = getStarred();
+  let btn = document.getElementById('openStarredBtn');
+  if (!btn) {
+    btn = document.createElement('button');
+    btn.id = 'openStarredBtn';
+    btn.className = 'open-starred-btn';
+    btn.onclick = openAllStarred;
+    document.getElementById('batchButtons').prepend(btn);
+  }
+  btn.style.display = starred.size ? 'inline-block' : 'none';
+  btn.textContent = `⭐ Open ${starred.size} Starred`;
+}
+
+function openAllStarred() {
+  const starred = getStarred();
+  const urls = DATA.filter(r => r[5] && starred.has(r[1])).map(r => r[5]);
+  if (!urls.length) return;
+  const s = urls.map(x => 'window.open(' + JSON.stringify(x) + ',"_blank");').join('');
+  const p = '<html><body><script>window.onload=function(){' + s + 'window.close();}<\/script><p style="font-family:sans-serif;padding:20px">Opening ' + urls.length + ' profiles\u2026</p></body></html>';
+  window.open(URL.createObjectURL(new Blob([p], {type:'text/html'})), '_blank');
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+
+function renderTable() {
+  const search      = document.getElementById('search').value.toLowerCase();
+  const fc          = document.getElementById('filterCompany').value;
+  const fs          = document.getElementById('filterStatus').value;
+  const starredOnly = document.getElementById('filterStarred').checked;
+  const starred     = getStarred();
+
+  const filtered = currentData.filter(r => {
+    const ok1 = !search || r[1].toLowerCase().includes(search) || r[2].toLowerCase().includes(search) || r[3].toLowerCase().includes(search);
+    const ok2 = !fc || r[3] === fc;
+    const ok3 = !fs || r[6] === fs;
+    const ok4 = activeSegment === 'all' || getSegment(r) === activeSegment;
+    const ok5 = !starredOnly || starred.has(r[1]);
+    return ok1 && ok2 && ok3 && ok4 && ok5;
+  });
+
+  document.getElementById('countBadge').textContent = filtered.length + ' of ' + DATA.length;
+
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
+
+  filtered.forEach((r, i) => {
+    if (i % 10 === 0) {
+      const d = tbody.insertRow(); d.className = 'batch-divider';
+      const c = d.insertCell(); c.colSpan = 9;
+      c.textContent = 'Batch ' + (Math.floor(i/10)+1) + ' \u00B7 rows ' + (i+1) + '\u2013' + Math.min(i+10, filtered.length);
+    }
+
+    const seg        = getSegment(r);
+    const seniority  = getSeniority(r[2]);
+    const worth      = isWorthMeeting(seg);
+    const isStarred  = starred.has(r[1]);
+    const isExpanded = expandedRows.has(r[1]);
+
+    const tr = tbody.insertRow();
+    tr.dataset.name = r[1];
+    if (worth) tr.classList.add('worth-meeting');
+
+    const logo = r[4] ? 'https://www.google.com/s2/favicons?domain=' + r[4] + '&sz=64' : null;
+    const about = r[7] || '';
+    const aboutHtml = about
+      ? '<div class="about-text' + (isExpanded ? ' expanded' : '') + '">' + about + '</div>'
+      : '<span style="color:#ccc">\u2014</span>';
+
+    const liSvg   = r[6] === 'Guessed' ? LI_SVG_YELLOW : r[6] === 'Confirmed' ? LI_SVG : LI_SVG_GREY;
+    const liTitle = r[6] === 'Guessed' ? 'Guessed LinkedIn' : r[6] === 'Confirmed' ? 'Confirmed LinkedIn' : 'No LinkedIn';
+
+    const scfg = SEG_CONFIG[seg] || SEG_CONFIG['Other'];
+    let tagsHtml = '<span class="tag ' + scfg.cls + '">' + scfg.label + '</span>';
+    if (worth) tagsHtml += ' <span class="tag tag-worth">&#9733; Priority</span>';
+
+    const badgeClass = { 'C-Suite': 'badge-csuite', 'VP/Dir': 'badge-vpdir', 'Senior': 'badge-senior', 'Associate': 'badge-associate' }[seniority] || '';
+    const badgeHtml  = seniority ? '<span class="badge ' + badgeClass + '">' + seniority + '</span>' : '';
+
+    const nameAttr  = r[1].replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+    const expandBtn = about
+      ? '<button class="expand-btn' + (isExpanded ? ' open' : '') + '" tabindex="-1" title="Expand bio">&#9654;</button>'
+      : '';
+
+    tr.innerHTML =
+      '<td class="td-cb"><input type="checkbox" class="shortlist-cb" ' + (isStarred ? 'checked' : '') + ' onchange="toggleStar(&quot;' + nameAttr + '&quot;, this)" title="Shortlist"></td>' +
+      '<td class="td-photo"><img class="avatar" src="' + r[0] + '" alt="' + nameAttr + '" onerror="this.src=\'' + D + '\'"></td>' +
+      '<td class="td-li">' + (r[5] ? '<a class="li-link" href="' + r[5] + '" target="_blank" rel="noopener" title="' + liTitle + '">' + liSvg + '</a>' : '<span class="li-link grey" title="' + liTitle + '">' + liSvg + '</span>') + '</td>' +
+      '<td class="td-name"><span class="name-text">' + r[1] + '</span><div class="tags-row">' + tagsHtml + '</div></td>' +
+      '<td class="td-title"><div class="title-wrap">' + (r[2] ? '<span>' + r[2] + '</span>' : '<span style="color:#ccc">\u2014</span>') + badgeHtml + '</div></td>' +
+      '<td class="td-company"><div class="company-cell">' +
+        (logo ? '<img class="company-logo" src="' + logo + '" alt="" onerror="this.style.display=\'none\'" loading="lazy">' : '') +
+        '<span class="company-name">' + (r[3] || '<span style="color:#ccc">\u2014</span>') + '</span>' +
+      '</div></td>' +
+      '<td class="td-about">' + aboutHtml + '</td>' +
+      '<td class="td-expand">' + expandBtn + '</td>';
+
+    if (about) {
+      tr.style.cursor = 'pointer';
+      tr.addEventListener('click', (function(name) { return function(e) {
+        if (e.target.closest('a, input')) return;
+        toggleExpand(name);
+      }; })(r[1]));
+    }
+  });
+
+  updateBatchBtns(filtered);
+}
+
+// ── Batch buttons ─────────────────────────────────────────────────────────────
+
+function updateBatchBtns(filtered) {
+  const urls = filtered.filter(r => r[5]).map(r => r[5]);
+  const wrap = document.getElementById('batchButtons');
+  const existing = document.getElementById('openStarredBtn');
+  wrap.innerHTML = '<span class="batch-tip">Open LinkedIn in batch (allow popups):</span>';
+  if (existing) wrap.prepend(existing);
+  for (let i = 0; i < urls.length; i += 10) {
+    const chunk = urls.slice(i, i+10);
+    const btn = document.createElement('button');
+    btn.className = 'batch-btn';
+    btn.textContent = 'Batch ' + (Math.floor(i/10)+1) + ' (' + chunk.length + ')';
+    btn.onclick = (function(u) { return function() {
+      const s = u.map(x => 'window.open(' + JSON.stringify(x) + ',"_blank");').join('');
+      const p = '<html><body><script>window.onload=function(){' + s + 'window.close();}<\/script><p style="font-family:sans-serif;padding:20px">Opening ' + u.length + ' tabs\u2026</p></body></html>';
+      window.open(URL.createObjectURL(new Blob([p], {type:'text/html'})), '_blank');
+    }; })(chunk);
+    wrap.appendChild(btn);
+  }
+}
+
+// ── Sort ──────────────────────────────────────────────────────────────────────
 
 function resetOrder() {
   sortCol = null; sortAsc = true;
-  ['name','status','type'].forEach(k => {
-    const el = document.getElementById('si-' + k);
-    if (el) el.textContent = '';
+  currentData = [...DATA].sort(prioritySort);
+  document.querySelectorAll('thead th').forEach(th => {
+    th.classList.remove('sorted');
+    const sa = th.querySelector('.sort-arrow');
+    if (sa) sa.innerHTML = '&#8597;';
   });
   document.getElementById('resetOrderBtn').style.display = 'none';
   renderTable();
 }
 
-// Init
-buildSegCards();
+function sortBy(col) {
+  const idx = { name:1, title:2, company:3, about:7 };
+  if (sortCol === col) sortAsc = !sortAsc; else { sortCol = col; sortAsc = true; }
+  const i = idx[col];
+  currentData.sort((a, b) => {
+    const av = (a[i]||'').toLowerCase(), bv = (b[i]||'').toLowerCase();
+    return sortAsc ? av.localeCompare(bv) : bv.localeCompare(av);
+  });
+  document.querySelectorAll('thead th').forEach(th => {
+    th.classList.remove('sorted');
+    const sa = th.querySelector('.sort-arrow');
+    if (sa) sa.innerHTML = '&#8597;';
+  });
+  const colMap = { name: 3, title: 4, company: 5, about: 6 };
+  const thIdx  = colMap[col];
+  if (thIdx !== undefined) {
+    const th = document.querySelectorAll('thead th')[thIdx];
+    if (th) { th.classList.add('sorted'); const sa = th.querySelector('.sort-arrow'); if (sa) sa.innerHTML = sortAsc ? '&#8593;' : '&#8595;'; }
+  }
+  document.getElementById('resetOrderBtn').style.display = 'inline-block';
+  renderTable();
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+
+(function populateFilters() {
+  const companies = [...new Set(DATA.map(r => r[3]).filter(Boolean))].sort();
+  const sel = document.getElementById('filterCompany');
+  companies.forEach(c => { const o = document.createElement('option'); o.value = o.textContent = c; sel.appendChild(o); });
+})();
+
+document.getElementById('search').addEventListener('input', renderTable);
+document.getElementById('filterCompany').addEventListener('change', renderTable);
+document.getElementById('filterStatus').addEventListener('change', renderTable);
+document.getElementById('filterStarred').addEventListener('change', renderTable);
+
+buildSegmentCards();
 updateOpenStarredBtn();
 renderTable();
 </script>
